@@ -1,0 +1,52 @@
+.nav-active{
+    text-decoration: underline;
+    text-transform: uppercase;
+}
+.non-active-class{
+    text-decoration: none;
+    text-transform: uppercase;
+    &:hover{
+        text-decoration: underline;
+        
+    }
+}
+
+.nav-active_side{
+    background: rgba(18, 18, 18, 0.04);
+    text-transform: uppercase;
+}
+
+.non-active-class_side{
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+
+
+.searchBar,
+.searchBarActive {
+  transition: transform 0.5s ease-out; /* Ajuste la durée et le type d'animation selon tes préférences */
+  position: fixed; /* Ou 'absolute', selon le contexte de ta mise en page */
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(-100%); /* Démarre hors de l'écran */
+  background: white; /* Ou toute autre couleur de fond */
+  z-index: 1; /* Assure-toi qu'elle apparaît au-dessus des autres éléments */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 226px;
+  padding: 30px;
+}
+
+.searchBarActive {
+  transform: translateY(0%); /* Glisse en place */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 226px;
+  padding: 30px;
+}

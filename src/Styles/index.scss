@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Metamorphous&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    //font-family: "Manrope", sans-serif;
+    font-family: "Assistant", sans-serif;
+    font-optical-sizing: auto;
+    color: #121212BF;
+    
+    //font-style: normal;
+    //font-weight:400;
+    //background:rgb(245, 245, 244);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+
+.alma_font{
+    font-family: "Lilita One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+@import url('./Components/navigation.scss');
+@import url('./Components/side_bar_menu.scss');
+@import url('./Components/cards_home.scss');
+@import url('./Components/footer.scss');
+
+

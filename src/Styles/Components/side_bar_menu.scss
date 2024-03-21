@@ -1,0 +1,66 @@
+.sideBarNav {
+    width: 256px; /* Ou la largeur de votre choix */
+    position: absolute;
+    top: 225px;
+    left: -256px; /* Assurez-vous que cela correspond à la largeur de votre SideBarNav pour qu'il soit complètement caché */
+    height: 100vh;
+    background-color: #ffffff; /* Ou toute autre couleur de fond */
+    transition: all 0.5s ease-in-out; /* Animation de coulissement */
+    z-index: 100; /* Assurez-vous qu'il est au-dessus d'autres éléments */
+    
+
+    >a{
+        text-transform: uppercase;
+        padding-top: 1px;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: 500;
+        &:hover{
+            background: rgba(19, 19, 19, 0.04);
+        }
+    }
+        
+    }
+  
+  
+  .sideBarNav.open {
+    left: 0; /* Fait coulisser le SideBarNav dans la vue */
+    top: 225px;
+    // à partir de 750px largeur doit etre egal à 100%
+  }
+
+  .sideBarNavBottomActive{
+    position: fixed;
+    bottom: 0;
+    width: 256px;
+    z-index: 100; /* Assurez-vous qu'il est au-dessus d'autres éléments */
+    background: rgb(219, 219, 219);
+    transition: all 0.5s ease-in-out; /* Animation de coulissement */
+    transition: opacity 0.3s ease;
+    opacity: 1;
+  }
+
+  .sideBarNavBottom{
+    position: fixed;
+    bottom: 0;
+    width: 256px;
+    z-index: 100;  
+    transition: all 0.5s ease-in-out; 
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    
+  }
+
+  .no-scroll {
+    overflow: hidden;
+  }
+
+  @media (max-width: 750px) {
+    .sideBarNav.open {
+      width: 100%;
+    }
+
+    .sideBarNavBottomActive{
+        width: 100%;
+    }
+  }
