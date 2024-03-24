@@ -5,6 +5,20 @@ moment.locale('fr')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+module.exports.verifyConnected = async (req, res) => {
+    res.send('connected!')
+}
+
+module.exports.verifyIsUserOrAdmin = (req, res) => {
+    if(req.user.isAdmin === true){
+        return res.send("isAdmin")
+    }else if(req.user.isAdmin === false){
+        return res.send("isNotAdmin")
+    }else{
+        return res.send("unknown")
+    }
+}
+
 module.exports.getAllUsers = async (req, res) => {
     try{
         const users = await userModel.find()
@@ -19,7 +33,7 @@ module.exports.getUserById = async (req, res) => {
     if (!ObjectID.isValid(req.params.id))
     return res.status(400).send('Utilisateur inconnu ' + req.params.id)
     try{
-        const user = await userModel.findById(req.params.id).select("-password")
+        const user = await userModel.findById(req.params.id)
 
         res.send(user)
     }catch(err){
@@ -80,30 +94,32 @@ module.exports.addUser = async (req, res) => {
 }
 
 module.exports.signIn = async (req, res) => {
-    try{
-        const user = await userModel.findOne({email: req.body.email})
-
-        if(!user){
-            return res.json({ message: "Utilisateur inconnue !"})
+    try {
+        // Vérification de l'existence de l'utilisateur
+        const user = await userModel.findOne({ email: req.body.email });
+        if (!user) {
+            // Utilisation d'un message d'erreur générique pour améliorer la sécurité
+            return res.status(401).json({ message: "Email ou mot de passe incorrect !" });
         }
 
-        const decryptPassword = await bcrypt.compare(req.body.password, user.password)
-
-        if(!decryptPassword){
-            return res.json({message: "Mot de passe incorrect !"})
+        // Vérification du mot de passe
+        const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Email ou mot de passe incorrect !" });
         }
 
-        const token = jwt.sign({
-            id: user._id,
-            isAdmin: user.isAdmin
-        },
-        process.env.JWT_SEC, {expiresIn: "3d"}
-        )
+        // Création du token
+        const token = jwt.sign(
+            { id: user._id, isAdmin: user.isAdmin },
+            process.env.JWT_SEC,
+            { expiresIn: "3d" }
+        );
 
-        const {password, ...others} = user._doc
+        // Exclusion du mot de passe du résultat retourné
+        const { password, ...otherDetails } = user._doc;
 
-        res.status(200).send({...others, token})
-    }catch(err){
-        res.status(400).send(err)
+        res.status(200).json({ ...otherDetails, token });
+    } catch (err) {
+        res.status(500).json({ message: "Une erreur s'est produite lors de la connexion.", error: err.message });
     }
-}
+};

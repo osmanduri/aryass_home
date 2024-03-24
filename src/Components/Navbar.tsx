@@ -8,12 +8,18 @@ import SideBarNav from "./Navigation/SideBarNav"; // Assurez-vous que ce composa
 import InputSearchBar from "./Navigation/InputSearchBar";
 import Logo from "./Navigation/Logo";
 import { Link } from "react-router-dom";
+import { FaUser, FaUserCheck } from "react-icons/fa";
+import Cookies from "universal-cookie";
+import { useSelector } from "react-redux";
 
 export default function Navbar() {
     const [isSearch, setIsSearch] = useState(false);
     const [displayMenuBurger, setDisplayMenuBurger] = useState(false);
     const [showSideBar, setShowSideBar] = useState(false); // Nouvel état pour gérer l'affichage de SideBarNav
     const [showLogoInsteadOfMenu, setShowLogoInsteadOfMenu] = useState(false)
+    const [isToken, setIsToken] = useState<boolean>(false)
+    //@ts-ignore
+    const user = useSelector(state => state.user.userInfo)
 
     const showBurgerMenu = () => {
         if(window.innerWidth <= 990){
@@ -26,6 +32,16 @@ export default function Navbar() {
             setShowLogoInsteadOfMenu(false)
         }
     }
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        const token = cookies.get('token'); // Remplacez 'votre_token' par la clé utilisée pour stocker le token
+        if(token){
+            setIsToken(true)
+        }else{
+            setIsToken(false)
+        }
+    }, [])
 
     useEffect(() => {
         const handleResize = () => showBurgerMenu();
@@ -81,8 +97,14 @@ export default function Navbar() {
                         <div className="cursor-pointer" onClick={() => setIsSearch(!isSearch)}>
                             <IoIosSearch size={25}/>
                         </div>
-                        <div className="cursor-pointer">
-                            <Link to="/panier"><BsCart size={21} /></Link>
+                        <div>
+                            { !isToken ? <Link to="/login"><FaUser size={21} className="cursor-pointer"/></Link> : <Link to="/profil"><FaUserCheck size={26} className="cursor-pointer"/></Link>}
+                        </div>
+                        <div className="cursor-pointer relative">
+                            <Link to="/panier" className="relative flex justify-center items-center">
+                                <BsCart size={21} />
+                                <p className="absolute bottom-2 left-5 rounded-full w-[16px] h-[16px] text-white flex justify-center items-center text-xs" style={user ? {background:"black"} : {background:"white"}}>{user?.panier.length}</p>
+                            </Link>
                         </div>
                     </div>
                 </div>

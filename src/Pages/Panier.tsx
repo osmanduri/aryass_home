@@ -1,10 +1,20 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SinglePanier from '../Components/SinglePanier';
 import paypal_logo from '/paypal/paypal.png'
+import { useDispatch, useSelector } from "react-redux";
+import { viderPanier } from "../redux/panierSlice";
+import axios from 'axios'
+import { updateSuccess } from "../redux/userSlice";
 
 export default function Panier() {
+  //@ts-ignore
 
+    //@ts-ignore
+    const user = useSelector(state => state.user)
+    const [totalPrice, setTotalPrice] = useState<number>(0)
+    const [panier, setPanier] = useState([])
+    const dispatch = useDispatch()
     const almaTab = [
         "2 x 769,50 € (sans frais)",
         "3 x 769,50 € (sans frais)",
@@ -13,6 +23,40 @@ export default function Panier() {
     ]
 
     const [almaSelect, setAlmaSelect] = useState<string>("")
+
+    const handleViderPanier = () => {
+      dispatch(viderPanier())
+    }
+
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [])
+
+    useEffect(() => {
+      let somme = 0;
+      const fetchPanierUser = async () => {
+        await axios.get(`http://localhost:5005/api/users/getUserById/${user.userInfo._id}`)
+        .then((res:any) => {
+          console.log(res.data.panier)
+          setPanier(res.data.panier)
+          //dispatch(updateSuccess(res.data))
+        })
+        .catch(err => console.log(err))
+      }
+
+      if(user.userInfo){
+        fetchPanierUser();
+
+        user.userInfo.panier.forEach((element:any) => {
+        somme = somme + (element.prix * element.quantite)
+        })
+        setTotalPrice(somme)
+      }
+    }, [user])
+
+    if(!panier){
+      return null
+    }
 
   return (
     <div className="bg-white-100 p-8">
@@ -34,9 +78,15 @@ export default function Panier() {
         <div className="h-[1px] w-full bg-black opacity-10"/>
 
         {/* Product 1 */}
-        <SinglePanier/>
-        <SinglePanier/>
-        <SinglePanier/>
+        {
+          panier?.map((element:any, index:number) => {
+            return (
+              <SinglePanier element={element} key={index}/>
+            )
+          })
+        }
+        
+
 
 
 
@@ -44,10 +94,10 @@ export default function Panier() {
         
         {/* Divider */}
         <div className="h-[1px] w-full bg-black opacity-10" />
-
+        { user?.userInfo?.panier.length === 0 && <p className="max-sm:text-sm p-2 bg-black text-white text-center mt-1">Votre panier est vide</p> }
         <div className="h-40 mt-20">
             <div className="flex flex-col items-end max-md:items-center">
-                <p className="text-lg ">Total estimé<span className="ml-8 w-[320px] max-md:w-1/2"> €1.499,00 EUR</span></p>
+                <p className="text-lg w-[320px] flex justify-between">Total estimé:<span className="ml-8" onClick={handleViderPanier}> €{totalPrice+".00"} EUR</span></p>
                 <div className="border border-black p-4 w-[320px]">
                     <div className="flex justify-between"><p className="alma_font">Alma</p> <p className="hover:bg-black hover:text-white px-1 rounded cursor-pointer" onMouseEnter={() => setAlmaSelect(almaTab[0])}>2x</p><p onMouseEnter={() => setAlmaSelect(almaTab[1])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">3x</p><p onMouseEnter={() => setAlmaSelect(almaTab[2])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">4x</p><p onMouseEnter={() => setAlmaSelect(almaTab[3])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">10x</p></div>
                     <p>{almaSelect}</p>

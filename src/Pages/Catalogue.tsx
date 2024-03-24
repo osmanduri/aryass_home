@@ -1,17 +1,29 @@
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
+import { Link } from "react-router-dom";
 import ListeProduits from "./Catalogues/ListeProduits"
 import Menu from "./Catalogues/Menu"
 //import { canape } from "../../data/catalogues"
-//import axios from 'axios'
+import axios from 'axios'
 import { useSelector } from 'react-redux';
 import MenuDetailsFilter from "./Catalogues/MenuDetailsFilter";
 
 export default function Catalogue() {
   //@ts-ignore
   const filter = useSelector((state) => state.filter);
+  const [productTab, setProductTab] = useState([])
 
   useEffect(() => {
-    console.log(filter)
+    window.scrollTo(0, 0);
+    const fetchProduct = async () => {
+      await axios.get('http://localhost:5005/api/product/getAllProduct')
+      .then((res) => {
+        setProductTab(res.data)
+      })
+      .catch(err => console.log(err))
+    }
+
+    fetchProduct();
+
   }, [filter])
   return (
     <div className="">
@@ -20,14 +32,13 @@ export default function Catalogue() {
         <Menu/>
         <MenuDetailsFilter/>
       <div className="flex flex-wrap justify-between mt-12 max-lp:justify-center">
-        <ListeProduits/>
-        <ListeProduits/>
-        <ListeProduits/>
-        <ListeProduits/>
-        <ListeProduits/>
-        <ListeProduits/>
-        <ListeProduits/>
-        <ListeProduits/>
+        {
+          productTab.map((element, index) => {
+            return (
+              <ListeProduits element={element} key={index}/>
+            )
+          })
+        }
       </div>
       </div>
       

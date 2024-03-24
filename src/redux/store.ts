@@ -1,21 +1,36 @@
-import { configureStore } from '@reduxjs/toolkit'
-import filterSlice from './filterSlice.js'
-import storage from 'redux-persist/lib/storage'
-import { persistReducer } from 'redux-persist'
-import { combineReducers } from '@reduxjs/toolkit'
+// Importez les dépendances nécessaires
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
+// Importez vos slices
+import userSlice from './userSlice';
+import filterSlice from './filterSlice';
+
+// Configuration de Redux Persist
 const persistConfig = {
-    key: "root",
-    version: 1,
-    storage
-}
+  key: 'root',
+  storage,
+  // Ajoutez d'autres configurations ici si nécessaire, par exemple la liste blanche/noire
+};
 
-const reducer = combineReducers({
-    filter:filterSlice
-})
+// Combine reducers
+const rootReducer = combineReducers({
+  user: userSlice,
+  filter: filterSlice,
+  // Ajoutez d'autres reducers ici
+});
 
-const persistedReducer = persistReducer(persistConfig, reducer)
+// Créez un reducer persistant
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export default configureStore({
-    reducer: persistedReducer
-})
+// Configurez le store Redux
+const store = configureStore({
+  reducer: persistedReducer,
+});
+
+// Créez le persistor
+const persistor = persistStore(store);
+
+// Exportez à la fois le store et le persistor
+export { store, persistor };

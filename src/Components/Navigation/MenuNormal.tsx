@@ -7,7 +7,7 @@ export default function MenuNormal() {
                             <NavLink to="/" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                                     Accueil
                             </NavLink>
-                            <NavLink to="/catalogue" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
+                            <NavLink to="/catalogue/lit_coffre" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             LIT COFFRE 
                             </NavLink>
                             <NavLink to="/lit_cadre" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>

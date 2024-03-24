@@ -6,68 +6,35 @@ const path = require('path')
 //const chemin_img = path.join(__dirname, "../Profil")
 const productSchema = new mongoose.Schema({
 
-    nom: {
+    nomProduit: {
         type: String,
-        minLength: 2,
-        maxLength: 55,
-        unique: true,
         trimp: true,
-        index: true
     },
     categorie: {
         type: String,
-        minLength: 2,
-        maxLength: 55,
-        unique: true,
         trimp: true,
-        index: true
     },
     prix: {
-        type: String,
+        type: Number,
         required: true,
-        unique: true,
-        trim: true,
-        index: true
     },
     description:{
         type:String,
-        trim:true
     },
-    ville:{
-        type:String,
-        trim:true
+    img:{
+        type:[String],
+        default:null
     },
-    pays:{
-        type:String,
-        trim:true
+    dispo:{
+        type:Boolean
     },
-    aPropos:{
-        type:String,
+    promo:{
+        type:Boolean
     },
-    password: {
-        type: String,
-        required: true,
-        max: 1024,
-        minLength: 6
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
-    date_creation_user: {
+    date_creation_product: {
         type: String,
         default: moment().format('LLL')
     },
-    panier:{
-        type:[Object]
-    },
-    commande:{
-        type:[Object]
-    },
-    profil_img:{
-        type:String,
-        default:null
-    }
 
     }, {
         timestamps: true

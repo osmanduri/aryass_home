@@ -5,6 +5,7 @@ require('./Model/dbConnection')
 var cors = require('cors')
 const cookieParser = require('cookie-parser');
 const user_router = require('./Routes/userRoute')
+const product_router = require('./Routes/productRoute')
 var app = express()
 
 /*app.use(cors({
@@ -27,6 +28,7 @@ app.get('/healthy', (req, res) => {
 });
 
 app.use('/api/users', user_router)
+app.use('/api/product', product_router)
 
 
 // Lancez le serveur sur le port: PORT
