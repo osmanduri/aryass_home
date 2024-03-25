@@ -18,8 +18,11 @@ export default function Navbar() {
     const [showSideBar, setShowSideBar] = useState(false); // Nouvel état pour gérer l'affichage de SideBarNav
     const [showLogoInsteadOfMenu, setShowLogoInsteadOfMenu] = useState(false)
     const [isToken, setIsToken] = useState<boolean>(false)
+
     //@ts-ignore
     const user = useSelector(state => state.user.userInfo)
+     //@ts-ignore
+    const panier = useSelector(state => state.panier.articles)
 
     const showBurgerMenu = () => {
         if(window.innerWidth <= 990){
@@ -36,12 +39,13 @@ export default function Navbar() {
     useEffect(() => {
         const cookies = new Cookies();
         const token = cookies.get('token'); // Remplacez 'votre_token' par la clé utilisée pour stocker le token
+
         if(token){
             setIsToken(true)
         }else{
             setIsToken(false)
         }
-    }, [])
+    }, [panier])
 
     useEffect(() => {
         const handleResize = () => showBurgerMenu();
@@ -103,7 +107,7 @@ export default function Navbar() {
                         <div className="cursor-pointer relative">
                             <Link to="/panier" className="relative flex justify-center items-center">
                                 <BsCart size={21} />
-                                <p className="absolute bottom-2 left-5 rounded-full w-[16px] h-[16px] text-white flex justify-center items-center text-xs" style={user ? {background:"black"} : {background:"white"}}>{user?.panier.length}</p>
+                                <p className="absolute bottom-2 left-5 rounded-full w-[16px] h-[16px] text-white flex justify-center items-center text-xs" style={user ? {background:"black"} : {background:"white"}}>{panier.length}</p>
                             </Link>
                         </div>
                     </div>

@@ -58,12 +58,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: moment().format('LLL')
     },
-    panier:{
-        type:[Object]
-    },
-    commande:{
-        type:[Object]
-    },
     profil_img:{
         type:String,
         default:null

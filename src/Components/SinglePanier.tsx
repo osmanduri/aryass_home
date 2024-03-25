@@ -1,14 +1,10 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { FaRegTrashAlt } from "react-icons/fa";
-import Quantite from './Panier/Quantite';
 import { useDispatch } from 'react-redux';
-import { increaseArticle,decreaseArticle , supprimerArticle } from '../redux/panierSlice';
 import { useSelector } from 'react-redux';
-import axios from 'axios'
-import { updateSuccess } from '../redux/userSlice';
 import { FaPlus } from "react-icons/fa6";
 import { FiMinus } from "react-icons/fi";
+import { increaseArticle, decreaseArticle, supprimerArticle } from '../redux/panierSlice';
 
 export default function PanierComponent({element}:any) {
   //@ts-ignore
@@ -17,39 +13,17 @@ export default function PanierComponent({element}:any) {
       //const panier = useSelector((state) => state.panier);
 
       const handleUpdateValue = async (choix:string) => {
-        if(choix === "plus" && user.userInfo){
-          await axios.post(`http://localhost:5005/api/users/panier/incrementer/${user.userInfo._id}`, {product_id:element.id})
-          .then((res:any) => {
-            console.log(res.data)
-            dispatch(updateSuccess(res.data))
-          })
-          .catch(err => console.log(err))
-        }else if(choix === 'minus'){
-          await axios.post(`http://localhost:5005/api/users/panier/decrementer/${user.userInfo._id}`, {product_id:element.id})
-          .then((res:any) => {
-            console.log(res.data)
-            dispatch(updateSuccess(res.data))
-          })
-          .catch(err => console.log(err))
+
+        if(choix === 'plus' && element.quantite < 5){
+          dispatch(increaseArticle(element._id))
+        }else if(choix === 'minus' && element.quantite > 1){
+          dispatch(decreaseArticle(element._id))
         }
+
       }
 
       const handleDeleteItem = async () => {
-        console.log(element.id)
-        try{
-          if(user.userInfo){
-            await axios.post(`http://localhost:5005/api/users/panier/remove/${user.userInfo._id}`, {product_id:element.id})
-            .then((res) => {
-              dispatch(updateSuccess(res.data))
-            })
-            .catch(err => console.log(err))
-          }else{
-            // LocalStorage
-          }
-
-        }catch(err){
-          console.log(err)
-        }
+        dispatch(supprimerArticle(element._id))
       }
 
 

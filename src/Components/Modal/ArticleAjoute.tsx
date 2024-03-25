@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 interface ArticleAjouteProps {
     element:{
@@ -13,9 +15,14 @@ interface ArticleAjouteProps {
 }
 
 export default function ArticleAjoute({element, setShowArticleAjoute}:ArticleAjouteProps) {
+    const [panierItemNumber, setPanierItemNumber] = useState<number>(0)
     //@ts-ignore
-    const user = useSelector(state => state.user.userInfo)
-    console.log(user.panier.length)
+    const panier = useSelector(state => state.panier.articles)
+
+    useEffect(() => {
+        const panierLocalstorage = JSON.parse(localStorage.getItem("panier")!) || [];
+        setPanierItemNumber(panierLocalstorage.length)
+    },[])
   return (
     <div className='bg-white border border-black border-2 text-white p-4 shadow-2xl w-[450px] max-sm:w-[300px]'>
         <h1 className="text-black text-center uppercase text-lg">Article ajouté avec succès !</h1>
@@ -29,7 +36,7 @@ export default function ArticleAjoute({element, setShowArticleAjoute}:ArticleAjo
             </div>
         </div>
         <div className="mt-8">
-            <Link to="/panier"><p className="p-2 text-center bg-black text-white cursor-pointer max-sm:p-1">Voir panier<span className="text-white ml-1">{'( '+user.panier?.length+' )'}</span></p></Link>
+            <Link to="/panier"><p className="p-2 text-center bg-black text-white cursor-pointer max-sm:p-1">Voir panier<span className="text-white ml-1">{'( '+panier.length+' )'}</span></p></Link>
             <Link to="/"><p className="p-2 text-center bg-black text-white mt-2 cursor-pointer max-sm:p-1">Accèder au paiement</p></Link>
             <p onClick={() => setShowArticleAjoute(false)} className="underline text-center mt-3 cursor-pointer">Continuer les achats</p>
         </div>

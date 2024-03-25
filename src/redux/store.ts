@@ -6,6 +6,7 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 // Importez vos slices
 import userSlice from './userSlice';
 import filterSlice from './filterSlice';
+import panierSlice from './panierSlice';
 
 // Configuration de Redux Persist
 const persistConfig = {
@@ -18,6 +19,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userSlice,
   filter: filterSlice,
+  panier:panierSlice
   // Ajoutez d'autres reducers ici
 });
 

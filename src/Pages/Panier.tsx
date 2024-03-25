@@ -3,18 +3,25 @@ import { useState, useEffect } from "react";
 import SinglePanier from '../Components/SinglePanier';
 import paypal_logo from '/paypal/paypal.png'
 import { useDispatch, useSelector } from "react-redux";
-import { viderPanier } from "../redux/panierSlice";
-import axios from 'axios'
-import { updateSuccess } from "../redux/userSlice";
+import { viderPanierRedux } from "../redux/panierSlice";
+
+interface PanierItem {
+  id: string;
+  nomProduit: string;
+  categorie: string;
+  prix: number;
+  quantite: number;
+  img: string[];
+}
 
 export default function Panier() {
-  //@ts-ignore
-
+    const dispatch = useDispatch()
     //@ts-ignore
     const user = useSelector(state => state.user)
+    //@ts-ignore
+    const panierRedux = useSelector(state => state.panier)
     const [totalPrice, setTotalPrice] = useState<number>(0)
-    const [panier, setPanier] = useState([])
-    const dispatch = useDispatch()
+
     const almaTab = [
         "2 x 769,50 € (sans frais)",
         "3 x 769,50 € (sans frais)",
@@ -25,38 +32,29 @@ export default function Panier() {
     const [almaSelect, setAlmaSelect] = useState<string>("")
 
     const handleViderPanier = () => {
-      dispatch(viderPanier())
+      dispatch(viderPanierRedux())
+      
     }
-
     useEffect(() => {
       window.scrollTo(0, 0);
+      
     }, [])
 
     useEffect(() => {
-      let somme = 0;
-      const fetchPanierUser = async () => {
-        await axios.get(`http://localhost:5005/api/users/getUserById/${user.userInfo._id}`)
-        .then((res:any) => {
-          console.log(res.data.panier)
-          setPanier(res.data.panier)
-          //dispatch(updateSuccess(res.data))
-        })
-        .catch(err => console.log(err))
-      }
+      // Assurez-vous de remettre le défilement en haut de la page
+    
+      // Calculer le total du panier
+      const total = panierRedux.articles.reduce((acc:any, article:any) => {
+        return acc + (article.prix * article.quantite);
+      }, 0);
+      
+      // Mettre à jour le prix total
+      setTotalPrice(total);
+      
+    }, [panierRedux.articles]);
 
-      if(user.userInfo){
-        fetchPanierUser();
 
-        user.userInfo.panier.forEach((element:any) => {
-        somme = somme + (element.prix * element.quantite)
-        })
-        setTotalPrice(somme)
-      }
-    }, [user])
 
-    if(!panier){
-      return null
-    }
 
   return (
     <div className="bg-white-100 p-8">
@@ -79,11 +77,13 @@ export default function Panier() {
 
         {/* Product 1 */}
         {
-          panier?.map((element:any, index:number) => {
-            return (
-              <SinglePanier element={element} key={index}/>
-            )
-          })
+          panierRedux.articles.length > 0 ? (
+            panierRedux.articles.map((element: PanierItem) => (
+              <SinglePanier element={element} key={element.id}/>
+            ))
+          ) : (
+            <p className="max-sm:text-sm p-2 bg-black text-white text-center mt-1">Votre panier est vide.</p>
+          )
         }
         
 
@@ -94,10 +94,10 @@ export default function Panier() {
         
         {/* Divider */}
         <div className="h-[1px] w-full bg-black opacity-10" />
-        { user?.userInfo?.panier.length === 0 && <p className="max-sm:text-sm p-2 bg-black text-white text-center mt-1">Votre panier est vide</p> }
+        <p onClick={handleViderPanier} className="w-full flex justify-end underline cursor-pointer mt-2">Vider le panier</p>
         <div className="h-40 mt-20">
             <div className="flex flex-col items-end max-md:items-center">
-                <p className="text-lg w-[320px] flex justify-between">Total estimé:<span className="ml-8" onClick={handleViderPanier}> €{totalPrice+".00"} EUR</span></p>
+                <p className="text-lg w-[320px] flex justify-between">Total estimé:<span className="ml-8"> €{totalPrice+".00"} EUR</span></p>
                 <div className="border border-black p-4 w-[320px]">
                     <div className="flex justify-between"><p className="alma_font">Alma</p> <p className="hover:bg-black hover:text-white px-1 rounded cursor-pointer" onMouseEnter={() => setAlmaSelect(almaTab[0])}>2x</p><p onMouseEnter={() => setAlmaSelect(almaTab[1])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">3x</p><p onMouseEnter={() => setAlmaSelect(almaTab[2])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">4x</p><p onMouseEnter={() => setAlmaSelect(almaTab[3])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">10x</p></div>
                     <p>{almaSelect}</p>

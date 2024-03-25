@@ -1,12 +1,10 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Select, Option } from "@material-tailwind/react";
 import { FaPlus } from "react-icons/fa6";
 import { FiMinus } from "react-icons/fi";
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { updateSuccess } from '../../redux/userSlice';
-import axios from 'axios';
+import { ajouterArticleSelonQuantite } from '../../redux/panierSlice';
 
 interface ChoisirOptionsProps {
     isDialogOpen:boolean;
@@ -25,8 +23,6 @@ interface ChoisirOptionsProps {
 
 export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, setShowArticleAjoute}:ChoisirOptionsProps) {
   const dispatch = useDispatch()
-  //@ts-ignore
-  const user = useSelector(state => state.user)
   const [value, setValue] = useState<number>(1)
 
   const handleUpdateValue = (choix:string) => {
@@ -58,30 +54,16 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
 
   const handleAddPanier = async () => {
     const payloadAddBasket = {
-        id:element?._id,
+        _id:element?._id,
         nomProduit:element?.nomProduit,
         categorie:element?.categorie,
         img:element?.img,
         prix: element?.prix,
         quantite:value
     }
-    try{
-      if(user.userInfo){ // si l'utilisateur est connecté on enregistre le panier dans la bdd
-        await axios.post(`http://localhost:5005/api/users/panier/add/${user.userInfo._id}`, payloadAddBasket)
-        .then((res:any) => {
-          console.log(res.data)
-          dispatch(updateSuccess(res.data))
-          setIsDialogOpen(false)
-          setShowArticleAjoute(true)
-        })
-        .catch((err:any) => console.log(err))
-      }else{
-        // Ecrire la logique pour stocké dans le localstorage le panier vu que l'user n'est pas authentifié
-      }
-
-    }catch(err){
-      console.log(err)
-    }
+    dispatch(ajouterArticleSelonQuantite(payloadAddBasket))
+    setIsDialogOpen(false)
+    setShowArticleAjoute(true)
   }
 
   return (

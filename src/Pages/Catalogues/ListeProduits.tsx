@@ -2,11 +2,9 @@ import { motion } from 'framer-motion';
 import { Link } from "react-router-dom"
 import { useState, useRef } from "react";
 import ChoisirOptions from "../../Components/Modal/ChoisirOptions";
-import { ajouterArticle } from "../../redux/panierSlice";
+import { ajouterArticle } from '../../redux/panierSlice';
 import { useDispatch } from "react-redux";
-import axios from 'axios'
 import { useSelector } from "react-redux";
-import { updateSuccess } from "../../redux/userSlice";
 import ArticleAjoute from "../../Components/Modal/ArticleAjoute";
 import useOutsideClick from './ClickOutside/useOutsideClick';
 
@@ -37,39 +35,22 @@ export default function ListeProduits({element}:ListeProduitsProps) {
   const dispatch = useDispatch()
   //@ts-ignore
   const user = useSelector(state => state.user)
+  //@ts-ignore
+  const panier = useSelector(state => state.panier)
 
   const handleAddPanier = async () => {
     console.log(element)
     const payloadAddBasket = {
-        id:element._id,
+        _id:element._id,
         nomProduit:element.nomProduit,
         categorie:element.categorie,
         img:element.img,
         prix: element.prix,
         quantite:1
     }
-    try{
-      if(user.userInfo){ // si l'utilisateur est connecté on enregistre le panier dans la bdd
-        await axios.post(`http://localhost:5005/api/users/panier/add/${user.userInfo._id}`, payloadAddBasket)
-        .then((res) => {
-          console.log(res.data)
-          dispatch(updateSuccess(res.data))
-          setShowArticleAjoute(true);
-          //setTimeout(() => setShowArticleAjoute(false), 3000); // Masquer après 3 secondes
-          
-        })
-        .catch((err) => console.log(err))
-      }else{
-        const monObjet = { panier: user.userInfo.panier };
-        // Convertit l'objet en chaîne de caractères JSON
-        const monObjetEnString = JSON.stringify(monObjet);
-        // Stocke l'objet dans localStorage sous la clé 'maCle'
-        localStorage.setItem('panier', monObjetEnString);
-      }
-
-    }catch(err){
-      console.log(err)
-    }
+    //ajouterAuPanier(payloadAddBasket)
+    dispatch(ajouterArticle(payloadAddBasket))
+    setShowArticleAjoute(true);
   }
 
     useOutsideClick(modalRef, () => setShowArticleAjoute(false))
@@ -93,7 +74,7 @@ export default function ListeProduits({element}:ListeProduitsProps) {
     </div>
     </Link>
     {
-      !isTag ?
+      isTag ?
        <p onClick={() => setIsDialogOpen(true)} className="cursor-pointer shadow-none text-center p-4 border border-black w-[300px] max-lp:w-[250px] mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out">Choisir des options</p>
        :
        <p onClick={handleAddPanier} className="cursor-pointer shadow-none text-center p-4 border border-black w-[300px] max-lp:w-[250px] mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out">Ajouter au panier</p>

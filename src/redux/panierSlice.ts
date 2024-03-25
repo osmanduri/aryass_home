@@ -1,11 +1,11 @@
 // panierSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface PanierItem {
   _id: string;
-  nomProduit:string;
+  nomProduit: string;
   categorie: string;
-  prix: string;
+  prix: number;
   quantite: number;
   img: string[];
 }
@@ -14,56 +14,68 @@ interface PanierState {
   articles: PanierItem[];
 }
 
-interface QuantiteChangePayload {
-    _id: string;
-    quantiteChange: number; // Combien ajouter ou soustraire à la quantité
-  }
-  
-
+// État initial du panier
 const initialState: PanierState = {
   articles: [],
 };
 
 const panierSlice = createSlice({
-  name: "panier",
+  name: 'panier',
   initialState,
   reducers: {
+    // Ajouter un article au panier ou augmenter sa quantité
     ajouterArticle: (state, action: PayloadAction<PanierItem>) => {
-      const index = state.articles.findIndex(article => article._id === action.payload._id);
-      if (index !== -1) {
-        // Si l'article existe déjà, augmenter la quantité
-        state.articles[index].quantite += action.payload.quantite;
+      console.log('ajouterArticle !')
+      const existingArticle = state.articles.find(article => article._id === action.payload._id);
+      if (existingArticle) {
+        existingArticle.quantite++;
       } else {
-        // Sinon, ajouter le nouvel article
+        state.articles.push({ ...action.payload, quantite: 1 });
+      }
+    },
+    // Ajouter un article au panier selon une quantité spécifique
+    ajouterArticleSelonQuantite: (state, action: PayloadAction<PanierItem>) => {
+      const existingArticle = state.articles.find(article => article._id === action.payload._id);
+      if (existingArticle) {
+        existingArticle.quantite += action.payload.quantite;
+      } else {
         state.articles.push(action.payload);
       }
     },
+    // Supprimer un article du panier
     supprimerArticle: (state, action: PayloadAction<string>) => {
       state.articles = state.articles.filter(article => article._id !== action.payload);
     },
-    increaseArticle: (state, action: PayloadAction<QuantiteChangePayload>) => {
-        const article = state.articles.find(article => article._id === action.payload._id);
-        if (article) {
-          article.quantite += action.payload.quantiteChange;
-        }
-      },
-    decreaseArticle: (state, action: PayloadAction<QuantiteChangePayload>) => {
-        const article = state.articles.find(article => article._id === action.payload._id);
-        if (article && article.quantite > action.payload.quantiteChange) {
-          // Empêche la quantité de devenir négative
-          article.quantite -= action.payload.quantiteChange;
-        } else if (article) {
-          // Si la décrémentation demandée dépasse la quantité actuelle, optionnellement retirer l'article du panier
-          // Ou le régler à 1 ou un autre comportement selon la logique métier souhaitée
-          article.quantite = 1; // Ou autre logique
-        }
-      },
-    viderPanier: (state) => {
+    // Augmenter la quantité d'un article dans le panier
+    increaseArticle: (state, action: PayloadAction<string>) => {
+      const existingArticle = state.articles.find(article => article._id === action.payload);
+      if (existingArticle) {
+        existingArticle.quantite++;
+      }
+    },
+    // Réduire la quantité d'un article dans le panier
+    decreaseArticle: (state, action: PayloadAction<string>) => {
+      const existingArticle = state.articles.find(article => article._id === action.payload);
+      if (existingArticle && existingArticle.quantite > 1) {
+        existingArticle.quantite--;
+      } else if (existingArticle && existingArticle.quantite === 1) {
+        state.articles = state.articles.filter(article => article._id !== action.payload);
+      }
+    },
+    // Vider le panier
+    viderPanierRedux: state => {
       state.articles = [];
     },
-    // Ajoutez plus de reducers selon vos besoins...
   },
 });
 
-export const { ajouterArticle, supprimerArticle, increaseArticle, decreaseArticle , viderPanier } = panierSlice.actions;
+export const {
+  ajouterArticle,
+  supprimerArticle,
+  increaseArticle,
+  decreaseArticle,
+  ajouterArticleSelonQuantite,
+  viderPanierRedux,
+} = panierSlice.actions;
+
 export default panierSlice.reducer;
