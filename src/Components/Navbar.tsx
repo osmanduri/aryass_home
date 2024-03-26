@@ -45,7 +45,7 @@ export default function Navbar() {
         }else{
             setIsToken(false)
         }
-    }, [panier])
+    }, [])
 
     useEffect(() => {
         const handleResize = () => showBurgerMenu();
@@ -107,7 +107,7 @@ export default function Navbar() {
                         <div className="cursor-pointer relative">
                             <Link to="/panier" className="relative flex justify-center items-center">
                                 <BsCart size={21} />
-                                <p className="absolute bottom-2 left-5 rounded-full w-[16px] h-[16px] text-white flex justify-center items-center text-xs" style={user ? {background:"black"} : {background:"white"}}>{panier.length}</p>
+                                <p className="absolute bottom-2 left-5 rounded-full w-[20px] h-[20px] text-white flex justify-center items-center text-xs" style={user ? {background:"black"} : {background:"white"}}>{panier.length}</p>
                             </Link>
                         </div>
                     </div>

@@ -1,12 +1,14 @@
-import  { useState, useEffect } from "react";
+import  { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import Quantite from "../Components/Panier/Quantite";
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from "axios";
 import { FaPlus } from "react-icons/fa6";
 import { FiMinus } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { updateSuccess } from "../redux/userSlice";
+import { ajouterArticleSelonQuantite } from "../redux/panierSlice";
+import ArticleAjoute from "../Components/Modal/ArticleAjoute";
+import Taille from "../Components/TagsComponent/Taille";
+import ChoixMatelat from "../Components/TagsComponent/ChoixMatelat";
 
 interface singleProductProps {
     _id:string;
@@ -14,9 +16,18 @@ interface singleProductProps {
     categorie:string;
     prix:number;
     img:[string];
+    tags:any;
 }
 
+// Définition des variantes pour l'animation
+const variants = {
+    hidden: { y: -100, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+  };
+
 export default function ProductDetails() {
+    const [showArticleAjoute, setShowArticleAjoute] = useState(false);
+    const modalRef = useRef<HTMLDivElement | null>(null);
     const [value, setValue] = useState<number>(1);
     const [singleProduct, setSingleProduct] = useState<singleProductProps>()
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -24,14 +35,15 @@ export default function ProductDetails() {
     //@ts-ignore
     const user = useSelector(state => state.user)
     const dispatch = useDispatch()
+    
 
     useEffect(() => {
-        console.log(params)
         const fetchSingleProduct = async () => {
             await axios.get(`http://localhost:5005/api/product/getProductById/${params.choix_categorie}/${params.id}`)
             .then((res:any) =>{
                 console.log(res.data)
                 setSingleProduct(res.data)
+                
             })
             .catch(err => console.log(err))
         }
@@ -58,35 +70,21 @@ export default function ProductDetails() {
 
     const handleAddPanier = async () => {
         const payloadAddBasket = {
-            id:singleProduct?._id,
-            nomProduit:singleProduct?.nomProduit,
-            categorie:singleProduct?.categorie,
-            img:singleProduct?.img,
+            _id: singleProduct?._id,
+            nomProduit: singleProduct?.nomProduit,
+            categorie: singleProduct?.categorie,
+            img: singleProduct?.img,
             prix: singleProduct?.prix,
-            quantite:value
+            quantite: value
         }
-        try{
-          if(user.userInfo){ // si l'utilisateur est connecté on enregistre le panier dans la bdd
-            await axios.post(`http://localhost:5005/api/users/panier/add/${user.userInfo._id}`, payloadAddBasket)
-            .then((res) => {
-              console.log(res.data)
-              dispatch(updateSuccess(res.data))
-            })
-            .catch((err) => console.log(err))
-          }else{
-            // Ecrire la logique pour stocké dans le localstorage le panier vu que l'user n'est pas authentifié
-          }
-    
-        }catch(err){
-          console.log(err)
-        }
+        dispatch(ajouterArticleSelonQuantite(payloadAddBasket))
+        setShowArticleAjoute(true)
       }
 
-    if(!singleProduct){
-        return null;
-    }
+      if (!singleProduct) return <p>Loading...</p>;
 
     return (
+        <>
         <div className="bg-[#F3F3F3]">
             
             <div className="container mx-auto my-12 p-8 ">
@@ -99,7 +97,7 @@ export default function ProductDetails() {
                                 singleProduct.img.map((element, index) => {
                                     if(index === 0) return null
                                     return (
-                                        <img src={element} alt="Vue détaillée du produit" className="w-1/5 m-2 cursor-pointer" onClick={() => openImageModal(element)} /> 
+                                        <img key={index} src={element} alt="Vue détaillée du produit" className="w-1/5 m-2 cursor-pointer" onClick={() => openImageModal(element)} /> 
                                     )
                                 })
                             }
@@ -116,26 +114,27 @@ export default function ProductDetails() {
   
                         {/* Size selection */}
                         <div className="flex flex-col items-start gap-1 mb-4 mt-4">
-                            <p className="font-semibold">Taille</p>
-                            <div className="flex gap-4">
-                                <button className="border border-black px-6 py-2 max-lp:px-3 max-lp:py-1  rounded-full bg-black text-white">140X190</button>
-                                <button className="border border-black px-6 py-2 max-lp:px-3 max-lp:py-1 rounded-full">160X200</button>
-                                <button className="border border-black px-6 py-2 max-lp:px-3 max-lp:py-1 rounded-full">180X200</button>
-                            </div>
+                            {
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'taille') && <Taille options={singleProduct.tags.filter((tag:any) => tag.type === "taille")}/>
+                            }
                         </div>
-  
-                        {/* Mattress selection */}
-                        <div className="flex flex-wrap items-center gap-2 mb-4 mt-4">
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4">
+                            {
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Choix Matelat') && <ChoixMatelat options={singleProduct.tags.filter((tag:any) => tag.type === "Choix Matelat")}/>
+                            }
+                        </div>
+
+                        {/*<div className="flex flex-wrap items-center gap-2 mb-4 mt-4">
                             <p className="font-semibold w-full">Taille du Matelas</p>
-                            <button className="border border-black px-4 py-2 max-lp:px-2 max-lp:py-1 rounded-full">NON- SANS MATELAS</button>
-                            <button className="border border-black px-4 py-2 max-lp:px-2 max-lp:py-1 rounded-full">OUI AVEC MATELAS - 20 CM</button>
-                            <button className="border border-black px-4 py-2 max-lp:px-2 max-lp:py-1 rounded-full">OUI AVEC MATELAS - 22 CM</button>
-                            <button className="border border-black px-4 py-2 max-lp:px-2 max-lp:py-1 rounded-full">OUI AVEC MATELAS - 25 CM</button>
-                            <button className="border border-black px-4 py-2 max-lp:px-2 max-lp:py-1 rounded-full">OUI AVEC MATELAS - 27 CM</button>
-                            <button className="border border-black px-4 py-2 max-lp:px-2 max-lp:py-1 rounded-full">OUI AVEC MATELAS - 30 CM</button>
-                            <button className="border border-black px-4 py-2 max-lp:px-2 max-lp:py-1 rounded-full">OUI AVEC MATELAS - 32 CM</button>
-                            {/* Add more options if necessary */}
-                        </div>
+                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">NON- SANS MATELAS</p>
+                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 20 CM</p>
+                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 22 CM</p>
+                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 25 CM</p>
+                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 27 CM</p>
+                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 30 CM</p>
+                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 32 CM</p>
+
+                        </div>*/}
   
                         {/* Quantity adjustment */}
                         <div className="flex items-center gap-4 mb-6 mt-14">
@@ -183,5 +182,19 @@ export default function ProductDetails() {
                 )}
             </AnimatePresence>
         </div>
+          {showArticleAjoute && (
+        <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={variants}
+        className="fixed inset-0 z-50 flex justify-center items-center"
+        style={{ backdropFilter: 'blur(3px)' }} // Optionnel: flou de l'arrière-plan
+      >
+          <div ref={modalRef}>
+            <ArticleAjoute element={singleProduct} setShowArticleAjoute={setShowArticleAjoute}/>
+          </div>
+        </motion.div>
+      )}
+        </>
     );
 }

@@ -29,10 +29,12 @@ export default function PanierComponent({element}:any) {
 
   return (
     <div className="flex items-center py-5 max-md:items-start">
-    <div className="flex w-3/5"> 
-      <img className="h-[120px] w-[120px] max-md:w-[90px] " src={element.img[0]} alt="canape" />
+    <div className="flex w-3/5 max-md:w-4/5"> 
+      <Link to={`/catalogue/${element.categorie}/${element._id}`} className='cursor-pointer h-[120px] w-[120px] max-sm:w-[90px] max-md:h-[90px] block'>
+        <img className="h-full w-full" src={element.img[0]} alt="canape" />
+      </Link>
       <div className="flex flex-col ml-4 gap-1">
-        <Link to="/" className="text-lg text-gray-900 font-semibold hover:underline max-sm:text-sm max-sm:w-[80%]">{element.nomProduit}</Link>
+        <Link to={`/catalogue/${element.categorie}/${element._id}`} className="text-lg text-gray-900 font-semibold hover:underline max-sm:text-sm max-sm:w-[80%]">{element.nomProduit}</Link>
         <span className="text-md font-semibold max-sm:text-sm max-sm:w-2/5">€ {element.prix+".00"}</span>
           <p className="text-sm max-sm:text-xs">Taille: 140X190</p>
           <p className="text-sm max-sm:text-xs">Taille du Matelas: NON- SANS MATELAS</p>

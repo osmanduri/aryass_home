@@ -5,9 +5,9 @@ moment.locale('fr')
 
 module.exports.getAllProduct = async (req, res) => {
     try{
-        const products = await productModel.find()
+        const productsWithTag = await this.getWithTag();
 
-        res.send(products)
+        res.send(productsWithTag)
     }catch(err){
         res.send(err)
     }
@@ -15,17 +15,28 @@ module.exports.getAllProduct = async (req, res) => {
 
 
 module.exports.getProductById = async (req, res) => {
-    if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send('Produit inconnu ' + req.params.id)
-    console.log(req.params.id, req.params.choix_categorie)
-    try{
-        const product = await productModel.findById(req.params.id)
-
-        res.send(product)
-    }catch(err){
-        res.status(400).send(err)
+    // Vérifie si l'ID du produit est valide
+    if (!ObjectID.isValid(req.params.id)) {
+        return res.status(400).send({ message: `Produit inconnu avec l'ID ${req.params.id}` });
     }
-}
+
+    try {
+        // Récupération du produit par son ID avec les tags associés
+        const productWithTagById = await this.getWithTagById(req.params.id);
+        
+        // Si aucun produit n'est trouvé, renvoie une erreur 404
+        if (productWithTagById.length === 0) {
+            return res.status(404).send({ message: `Aucun produit trouvé avec l'ID ${req.params.id}` });
+        }
+
+        // Envoie le produit trouvé au client
+        res.send(productWithTagById[0]);
+    } catch (err) {
+        // Gestion des erreurs potentielles lors de l'appel de la base de données
+        res.status(500).send({ message: 'Erreur lors de la récupération du produit', error: err.message });
+    }
+};
+
 
 
 module.exports.updateProduct = async(req, res) => {
@@ -75,4 +86,106 @@ module.exports.addProduct = async (req, res) => {
     }catch(err){
         res.status(400).send(err)
     }
+}
+
+module.exports.getWithTag = async () => {
+
+    let query = [
+        {
+          '$match': {
+            'categorie': 'lit_coffre'
+          }
+        },
+        {
+          '$unwind': {
+            'path': '$tags',
+            'preserveNullAndEmptyArrays': true
+          }
+        },
+        
+        {
+          '$lookup': {
+            'from': 'tags',
+            'localField': 'tags',
+            'foreignField': 'tagId',
+            'as': 'tag_result'
+          }
+        },
+        {
+          '$group': {
+            '_id': '$_id',
+            'nomProduit': { '$first': '$nomProduit' },
+            'categorie': { '$first': '$categorie' },
+            'prix': { '$first': '$prix' },
+            'img': { '$first': '$img' },
+            'description': { '$first': '$description' },
+            'tags': { '$addToSet': { '$first': '$tag_result' } }
+          }
+        },
+        {
+          '$sort': {
+            'nomProduit': 1
+          }
+        }
+    ];
+
+      const getTags = await productModel.aggregate(query)
+
+      return getTags   
+}
+
+module.exports.getWithTagById = async (id) => {
+    let query = [
+        {
+          '$match': {
+            'categorie': 'lit_coffre', 
+            '_id': new ObjectID(id)
+          }
+        },
+        {
+          '$lookup': {
+            'from': 'tags', 
+            'localField': 'tags', 
+            'foreignField': 'tagId', 
+            'as': 'tag_result'
+          }
+        },
+        {
+          '$unwind': {
+            'path': '$tag_result', 
+            'preserveNullAndEmptyArrays': true
+          }
+        },
+        {
+          '$sort': {
+            'tag_result.augmentation': 1
+          }
+        },
+        {
+          '$group': {
+            '_id': '$_id', 
+            'nomProduit': { '$first': '$nomProduit' },
+            'categorie': { '$first': '$categorie' },
+            'prix': { '$first': '$prix' },
+            'img': { '$first': '$img' },
+            'description': { '$first': '$description' },
+            'tags': { '$push': '$tag_result' }
+          }
+        },
+        {
+          '$addFields': {
+            'tags': {
+              '$filter': {
+                'input': '$tags',
+                'as': 'tag',
+                'cond': { '$ne': ['$$tag', null] }
+              }
+            }
+          }
+        }
+      ];
+
+      const getTags = await productModel.aggregate(query)
+
+      return getTags   
 }

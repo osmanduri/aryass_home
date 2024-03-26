@@ -11,7 +11,7 @@ import panierSlice from './panierSlice';
 // Configuration de Redux Persist
 const persistConfig = {
   key: 'root',
-  storage,
+  storage
   // Ajoutez d'autres configurations ici si nécessaire, par exemple la liste blanche/noire
 };
 

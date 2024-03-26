@@ -3,6 +3,13 @@ const moment = require('moment');
 moment.locale('fr');
 const path = require('path')
 
+const tagSchema = new mongoose.Schema({
+    type: String,
+    augmentation: Number,
+    tagId: String,
+    valeur:String
+  });
+
 //const chemin_img = path.join(__dirname, "../Profil")
 const productSchema = new mongoose.Schema({
 
@@ -31,11 +38,13 @@ const productSchema = new mongoose.Schema({
     promo:{
         type:Boolean
     },
+    tags:{
+        type:[String]
+    },
     date_creation_product: {
         type: String,
         default: moment().format('LLL')
     },
-
     }, {
         timestamps: true
     }

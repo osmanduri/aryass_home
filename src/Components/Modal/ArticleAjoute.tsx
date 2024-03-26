@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 interface ArticleAjouteProps {
     element:{
@@ -15,14 +13,10 @@ interface ArticleAjouteProps {
 }
 
 export default function ArticleAjoute({element, setShowArticleAjoute}:ArticleAjouteProps) {
-    const [panierItemNumber, setPanierItemNumber] = useState<number>(0)
     //@ts-ignore
     const panier = useSelector(state => state.panier.articles)
 
-    useEffect(() => {
-        const panierLocalstorage = JSON.parse(localStorage.getItem("panier")!) || [];
-        setPanierItemNumber(panierLocalstorage.length)
-    },[])
+
   return (
     <div className='bg-white border border-black border-2 text-white p-4 shadow-2xl w-[450px] max-sm:w-[300px]'>
         <h1 className="text-black text-center uppercase text-lg">Article ajouté avec succès !</h1>

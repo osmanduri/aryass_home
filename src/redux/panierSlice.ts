@@ -2,12 +2,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface PanierItem {
-  _id: string;
-  nomProduit: string;
-  categorie: string;
-  prix: number;
+  _id: string | undefined;
+  nomProduit: string | undefined;
+  categorie: string | undefined;
+  prix: number | undefined;
   quantite: number;
-  img: string[];
+  img: string[] | undefined;
 }
 
 interface PanierState {

@@ -44,12 +44,12 @@ export default function Panier() {
       // Assurez-vous de remettre le défilement en haut de la page
     
       // Calculer le total du panier
-      const total = panierRedux.articles.reduce((acc:any, article:any) => {
-        return acc + (article.prix * article.quantite);
-      }, 0);
+      let total = 0; // Initialisation de la variable total
+      panierRedux.articles.forEach((article:any) => {
+        total += article.prix * article.quantite; // Calcul du total
+      });
       
-      // Mettre à jour le prix total
-      setTotalPrice(total);
+      setTotalPrice(total); 
       
     }, [panierRedux.articles]);
 
@@ -78,8 +78,8 @@ export default function Panier() {
         {/* Product 1 */}
         {
           panierRedux.articles.length > 0 ? (
-            panierRedux.articles.map((element: PanierItem) => (
-              <SinglePanier element={element} key={element.id}/>
+            panierRedux.articles.map((element: PanierItem, index:number) => (
+              <SinglePanier element={element} key={index}/>
             ))
           ) : (
             <p className="max-sm:text-sm p-2 bg-black text-white text-center mt-1">Votre panier est vide.</p>
@@ -94,7 +94,7 @@ export default function Panier() {
         
         {/* Divider */}
         <div className="h-[1px] w-full bg-black opacity-10" />
-        <p onClick={handleViderPanier} className="w-full flex justify-end underline cursor-pointer mt-2">Vider le panier</p>
+        <p  className="w-full flex justify-end underline  mt-2"><span onClick={handleViderPanier} className="cursor-pointer">Vider le panier</span></p>
         <div className="h-40 mt-20">
             <div className="flex flex-col items-end max-md:items-center">
                 <p className="text-lg w-[320px] flex justify-between">Total estimé:<span className="ml-8"> €{totalPrice+".00"} EUR</span></p>

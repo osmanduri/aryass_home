@@ -74,7 +74,7 @@ export default function ListeProduits({element}:ListeProduitsProps) {
     </div>
     </Link>
     {
-      isTag ?
+      !isTag ?
        <p onClick={() => setIsDialogOpen(true)} className="cursor-pointer shadow-none text-center p-4 border border-black w-[300px] max-lp:w-[250px] mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out">Choisir des options</p>
        :
        <p onClick={handleAddPanier} className="cursor-pointer shadow-none text-center p-4 border border-black w-[300px] max-lp:w-[250px] mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out">Ajouter au panier</p>

@@ -36,7 +36,7 @@ export default function SideBarNav({ isOpen, setShowSideBar }: SideBarNavProps) 
                             <NavLink to="/" className={({isActive}) => isActive ? "nav-active_side" : "non-active-class_side"} onClick={() => setShowSideBar(false)}>
                               ACCUEIL
                             </NavLink>
-                            <NavLink to="/catalogue" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
+                            <NavLink to="/catalogue/lit_coffre" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
                             LIT COFFRE 
                             </NavLink>
                             <NavLink to="/lit_cadre" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
