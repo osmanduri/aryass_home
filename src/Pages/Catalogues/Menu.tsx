@@ -8,7 +8,11 @@ import SidebarFilter from './SidebarFilter';
 import { AnimatePresence } from 'framer-motion';
 import DropdownTrier from './DropdownTrier';
 
-export default function Menu() {
+interface MenuProps {
+  nbProduct:number;
+}
+
+export default function Menu({nbProduct}:MenuProps) {
   const [isShowDropDownPrice, setIsShowDropDownPrice] = useState<boolean>(false)
   const [isShowDropDownDispo, setIsShowDropDownDispo] = useState<boolean>(false)
   //const [isShowDropDownCategorie, setIsShowDropDownCategorie] = useState<boolean>(false)
@@ -95,18 +99,18 @@ export default function Menu() {
 
         </div>
         <DropdownTrier width={276}/>
-        <span className="text-sm">19 produits</span>
+        <span className="text-sm">{nbProduct} produits</span>
     </div> :
     <div className='flex justify-between items-center'>
       <div className='flex gap-2 items-center'>
         <IoFilterOutline onClick={closeSidebar} className='cursor-pointer'/>
         <p className='font-normal text-base'>Filtre:</p>
         <AnimatePresence>
-          {isSidebarOpen && <SidebarFilter closeSidebar={closeSidebar} />}
+          {isSidebarOpen && <SidebarFilter closeSidebar={closeSidebar} nbProduct={nbProduct}/>}
         </AnimatePresence>
         
       </div>
-      <span className="text-sm">19 produits</span>
+      <span className="text-sm">{nbProduct} produits</span>
     </div>
     }
     </>

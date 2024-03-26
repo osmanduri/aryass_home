@@ -24,9 +24,10 @@ const sidebarVariants = {
 
 interface SidebarFilterProps {
     closeSidebar: () => void;
+    nbProduct:number;
 }
 
-export default function SidebarFilter({ closeSidebar }:SidebarFilterProps) {
+export default function SidebarFilter({ closeSidebar, nbProduct }:SidebarFilterProps) {
     const dispatch = useDispatch()
     const [showDispoDetails, setShowDispoDetails] = useState<string>('main')
 
@@ -68,7 +69,7 @@ export default function SidebarFilter({ closeSidebar }:SidebarFilterProps) {
           <div className=''>
             <div className='flex flex-col items-center p-2 relative'>
                 <p className='text-sm text-black'>Filtrer et trier</p>
-                <p className='text-sm'>19 Produits</p>
+                <p className='text-sm'>{nbProduct} Produits</p>
                 <RxCross1 size={25} className="absolute top-0 right-5 h-full cursor-pointer" onClick={closeSidebar}/>
             </div>
             <div className="h-[1px] w-full bg-black opacity-10"/>

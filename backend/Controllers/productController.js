@@ -13,6 +13,17 @@ module.exports.getAllProduct = async (req, res) => {
     }
 }
 
+module.exports.getProductByCategorieWithTags = async (req, res) => {
+    try{
+        console.log(req.params.choix_categorie)
+        const productsByCategorieWithTag = await this.getWithTag(req.params.choix_categorie);
+
+        res.send(productsByCategorieWithTag)
+    }catch(err){
+        res.send(err)
+    }
+}
+
 
 module.exports.getProductById = async (req, res) => {
     // Vérifie si l'ID du produit est valide
@@ -22,7 +33,7 @@ module.exports.getProductById = async (req, res) => {
 
     try {
         // Récupération du produit par son ID avec les tags associés
-        const productWithTagById = await this.getWithTagById(req.params.id);
+        const productWithTagById = await this.getWithTagById(req.params.choix_categorie, req.params.id);
         
         // Si aucun produit n'est trouvé, renvoie une erreur 404
         if (productWithTagById.length === 0) {
@@ -77,7 +88,11 @@ module.exports.addProduct = async (req, res) => {
             nomProduit: req.body.nomProduit,
             categorie:req.body.categorie,
             prix: req.body.prix,
-            img: req.body.img
+            img: req.body.img,
+            tags:req.body.tags,
+            description:req.body.description,
+            dispo:req.body.dispo,
+            promo:req.body.promo
         })
 
         const savedProduct = await newProduct.save()
@@ -88,14 +103,23 @@ module.exports.addProduct = async (req, res) => {
     }
 }
 
-module.exports.getWithTag = async () => {
+module.exports.getWithTag = async (choix_categorie) => {
+    let matchCondition = { 'categorie': choix_categorie };
+    const priceMin = null;
+    const priceMax = null;
+    // Ajoutez la condition de prix seulement si priceMin et priceMax ne sont pas null
+    if (priceMin !== null || priceMax !== null) {
+        matchCondition.prix = {}; // Initialisez l'objet pour les conditions de prix
+        if (priceMin !== null) {
+            matchCondition.prix.$gte = priceMin; // Ajoutez la condition plus grand ou égal
+        }
+        if (priceMax !== null) {
+            matchCondition.prix.$lte = priceMax; // Ajoutez la condition moins grand ou égal
+        }
+    }
 
     let query = [
-        {
-          '$match': {
-            'categorie': 'lit_coffre'
-          }
-        },
+        { '$match': matchCondition },
         {
           '$unwind': {
             'path': '$tags',
@@ -119,7 +143,8 @@ module.exports.getWithTag = async () => {
             'prix': { '$first': '$prix' },
             'img': { '$first': '$img' },
             'description': { '$first': '$description' },
-            'tags': { '$addToSet': { '$first': '$tag_result' } }
+            'tags': { '$addToSet': { '$first': '$tag_result' } },
+            'dispo': { '$first': '$dispo' },
           }
         },
         {
@@ -134,11 +159,11 @@ module.exports.getWithTag = async () => {
       return getTags   
 }
 
-module.exports.getWithTagById = async (id) => {
+module.exports.getWithTagById = async (choix_categorie, id) => {
     let query = [
         {
           '$match': {
-            'categorie': 'lit_coffre', 
+            'categorie': choix_categorie, 
             '_id': new ObjectID(id)
           }
         },

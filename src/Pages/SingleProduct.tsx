@@ -9,6 +9,7 @@ import { ajouterArticleSelonQuantite } from "../redux/panierSlice";
 import ArticleAjoute from "../Components/Modal/ArticleAjoute";
 import Taille from "../Components/TagsComponent/Taille";
 import ChoixMatelat from "../Components/TagsComponent/ChoixMatelat";
+import StyleCanape from "../Components/TagsComponent/StyleCanape";
 
 interface singleProductProps {
     _id:string;
@@ -87,17 +88,17 @@ export default function ProductDetails() {
         <>
         <div className="bg-[#F3F3F3]">
             
-            <div className="container mx-auto my-12 p-8 ">
+            <div className="container mx-auto p-8 ">
                 <div className="grid grid-cols-2 gap-4 max-sm:flex max-sm:flex-col">
                     {/* Left column for images */}
-                    <div className="flex flex-col w-[90%]">
-                        <img src={singleProduct.img[0]} alt="Produit principal" className="mb-4 cursor-pointer" onClick={() => openImageModal(singleProduct.img[0])} />
+                    <div className="flex flex-col w-[95%]">
+                        <img src={singleProduct.img[0]} alt="Produit principal" className="mb-4 cursor-pointer w-full h-[500px]" onClick={() => openImageModal(singleProduct.img[0])} />
                         <div className="flex -mx-2 flex-wrap">
                             {
                                 singleProduct.img.map((element, index) => {
                                     if(index === 0) return null
                                     return (
-                                        <img key={index} src={element} alt="Vue détaillée du produit" className="w-1/5 m-2 cursor-pointer" onClick={() => openImageModal(element)} /> 
+                                        <img key={index} src={element} alt="Vue détaillée du produit" className="w-1/5 h-[120px] m-2 cursor-pointer" onClick={() => openImageModal(element)} /> 
                                     )
                                 })
                             }
@@ -113,14 +114,19 @@ export default function ProductDetails() {
                         <p className="mb-2">Taxes incluses.</p>
   
                         {/* Size selection */}
-                        <div className="flex flex-col items-start gap-1 mb-4 mt-4">
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' ? {display:"none"}: {}}>
                             {
                                singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'taille') && <Taille options={singleProduct.tags.filter((tag:any) => tag.type === "taille")}/>
                             }
                         </div>
-                        <div className="flex flex-col items-start gap-1 mb-4 mt-4">
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' ? {display:"none"}: {}}>
                             {
                                singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Choix Matelat') && <ChoixMatelat options={singleProduct.tags.filter((tag:any) => tag.type === "Choix Matelat")}/>
+                            }
+                        </div>
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'canape' ? {display:"none"}: {}}>
+                            {
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Orientation') && <StyleCanape options={singleProduct.tags.filter((tag:any) => tag.type === "Orientation")}/>
                             }
                         </div>
 

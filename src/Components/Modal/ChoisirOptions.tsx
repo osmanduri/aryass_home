@@ -15,6 +15,7 @@ interface ChoisirOptionsProps {
       categorie:string;
       prix:number;
       img:[string];
+      tags:any;
     }
     setShowArticleAjoute:any;
 }
@@ -24,6 +25,7 @@ interface ChoisirOptionsProps {
 export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, setShowArticleAjoute}:ChoisirOptionsProps) {
   const dispatch = useDispatch()
   const [value, setValue] = useState<number>(1)
+  console.log(element)
 
   const handleUpdateValue = (choix:string) => {
       if(choix === 'plus'){
@@ -100,10 +102,16 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
                         <p className='text-xs w-[80%]'>Taxes incluses. Frais d'expédition calculés à l'étape de paiement.</p>
                         <div className="flex flex-col items-start gap-1 mb-4 mt-4">
                             <div className="flex gap-4 mt-4">
-                            <Select label="Taille" variant="static" placeholder={null} size="md">
-                                <Option>140x190</Option>
-                                <Option>160x200</Option>
-                                <Option>180x200</Option>
+                            <Select label={element.tags[0].type} variant="static" placeholder={null} size="md">
+
+                                {
+                                  element.tags.map((e, index) => {
+                                    if(e.type !== "taille") {
+                                      return e.valeur = 'lol'
+                                    }
+                                    return <Option onClick={() => console.log(e)}>{e.valeur}</Option>
+                                  })
+                                }
                             </Select>
                             </div>
                             <div className="flex mt-6">

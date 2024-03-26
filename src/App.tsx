@@ -34,7 +34,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={isAuthenticated() ? <Navigate to="/profil" /> : <PageConnextion/>}/>
-            <Route path="/catalogue/lit_coffre" element={<Catalogue />} />
+            <Route path="/catalogue/:choix_categorie" element={<Catalogue />} />
             <Route path="/catalogue/:choix_categorie/:id" element={<SingleProduct />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/not_found" element={<NotFound />} />

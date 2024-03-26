@@ -16,7 +16,7 @@ export default function MenuNormal() {
                             <NavLink to="/matelat" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             MATELAS & SOMMIER 
                             </NavLink>
-                            <NavLink to="/canape" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
+                            <NavLink to="/catalogue/canape" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             CANAPÉ
                             </NavLink>
                             <NavLink to="/chevet" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
