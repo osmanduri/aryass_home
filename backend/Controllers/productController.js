@@ -119,40 +119,42 @@ module.exports.getWithTag = async (choix_categorie) => {
     }
 
     let query = [
-        { '$match': matchCondition },
-        {
-          '$unwind': {
-            'path': '$tags',
-            'preserveNullAndEmptyArrays': true
-          }
-        },
-        
-        {
-          '$lookup': {
-            'from': 'tags',
-            'localField': 'tags',
-            'foreignField': 'tagId',
-            'as': 'tag_result'
-          }
-        },
-        {
-          '$group': {
-            '_id': '$_id',
-            'nomProduit': { '$first': '$nomProduit' },
-            'categorie': { '$first': '$categorie' },
-            'prix': { '$first': '$prix' },
-            'img': { '$first': '$img' },
-            'description': { '$first': '$description' },
-            'tags': { '$addToSet': { '$first': '$tag_result' } },
-            'dispo': { '$first': '$dispo' },
-          }
-        },
-        {
-          '$sort': {
-            'nomProduit': 1
-          }
+      { '$match': matchCondition },
+      { 
+        '$lookup': { // Joindre avec la collection de tags avant de déconstruire pour garder tous les produits
+          'from': 'tags',
+          'localField': 'tags',
+          'foreignField': 'tagId',
+          'as': 'tag_details'
         }
+      },
+      {
+        '$unwind': { // Optionnel si vous voulez déconstruire le résultat du lookup
+          'path': '$tag_details',
+          'preserveNullAndEmptyArrays': true
+        }
+      },
+      { 
+        '$group': { // Regrouper à nouveau si `$unwind` est utilisé
+          '_id': '$_id',
+          'nomProduit': { '$first': '$nomProduit' },
+          'categorie': { '$first': '$categorie' },
+          'prix': { '$first': '$prix' },
+          'img': { '$first': '$img' },
+          'description': { '$first': '$description' },
+          'tags': { '$push': '$tag_details' },
+          'dispo': { '$first': '$dispo' },
+          'promo': { '$first': '$promo' }
+        }
+      },
+      {
+        '$sort': { // Trier par nomProduit et ensuite par tags.augmentation si nécessaire
+          'nomProduit': 1
+        }
+      }
     ];
+    
+    
 
       const getTags = await productModel.aggregate(query)
 
