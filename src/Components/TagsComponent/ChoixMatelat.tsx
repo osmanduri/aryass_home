@@ -1,21 +1,20 @@
 
 
-export default function ChoixMatelat({ options, selectedMattress, onSelect }:any) {
-  
+export default function ChoixMatelat({ options, handleChangeOption, select }:any) {
     return (
         <div>
           <p className="font-semibold">Choix Matelat:</p>
           <div className="flex flex-wrap items-center gap-2 mb-4 mt-2">
             {options.map((option:any, index:number) => (
-              <button
+              <div
                 key={index}
-                className={`border border-black px-6 py-3 max-lp:px-2 max-lp:py-1 rounded-full text-sm ${
-                  selectedMattress === option.valeur ? "bg-black text-white" : ""
+                className={`cursor-pointer border border-black px-6 py-3 max-lp:px-2 max-lp:py-1 rounded-full text-sm ${
+                  select.find((element:any) => element.valeur === option.valeur)  ? "bg-black text-white" : ""
                 }`}
-                onClick={() => onSelect(option)}
+                onClick={() => handleChangeOption(option)}
               >
                 {option.valeur}
-              </button>
+              </div>
             ))}
           </div>
         </div>

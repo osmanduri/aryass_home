@@ -1,5 +1,6 @@
 
-export default function StyleCanape({ options, selectedSize, onSelect }:any) {
+export default function StyleCanape({ options, select, handleChangeOption }:any) {
+
     return (
         <div>
           <p className="font-semibold">Orientation:</p>
@@ -8,9 +9,9 @@ export default function StyleCanape({ options, selectedSize, onSelect }:any) {
               <button
                 key={index}
                 className={`border border-black px-6 py-2 rounded-full max-lp:px-2 max-lp:py-1 max-lp:text-sm ${
-                  selectedSize === option.valeur ? "bg-black text-white" : ""
+                  select.find((element:any) => element.valeur === option.valeur)  ? "bg-black text-white" : ""
                 }`}
-                onClick={() => console.log(option)}
+                onClick={() => handleChangeOption(option)}
               >
                 {option.valeur}
               </button>

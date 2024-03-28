@@ -8,6 +8,7 @@ interface PanierItem {
   prix: number | undefined;
   quantite: number;
   img: string[] | undefined;
+  tags:any;
 }
 
 interface PanierState {

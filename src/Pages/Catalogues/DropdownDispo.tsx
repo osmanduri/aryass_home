@@ -8,9 +8,10 @@ interface DropdownPriceProps {
     setIsShowDropDownDispo?: Dispatch<SetStateAction<boolean>>;
     width?:number;
     height?:number;
+    nbProduct:number;
 }
 
-export default function DropdownDispo({ setIsShowDropDownDispo, width, height }: DropdownPriceProps) {
+export default function DropdownDispo({ setIsShowDropDownDispo, width, height, nbProduct }: DropdownPriceProps) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useDispatch();
@@ -67,18 +68,18 @@ export default function DropdownDispo({ setIsShowDropDownDispo, width, height }:
                     <input type="checkbox" id="checkbox-stock" className="cursor-pointer"
                            onChange={() => handleSelection('En stock')}
                            checked={selectedOptions.includes('En stock')} />
-                    <label htmlFor="checkbox-stock" className="ml-2">En stock (19)</label>
+                    <label htmlFor="checkbox-stock" className="ml-2">En stock ({nbProduct})</label>
                 </div>
                 <div className="flex items-center">
                     <input type="checkbox" id="checkbox-out-of-stock" className="cursor-pointer"
                            onChange={() => handleSelection('Rupture de stock')}
                            checked={selectedOptions.includes('Rupture de stock')} />
-                    <label htmlFor="checkbox-out-of-stock" className="ml-2">Rupture de stock</label>
+                    <label htmlFor="checkbox-out-of-stock" className="ml-2">Rupture de stock (1)</label>
                 </div>
             </div>
-            <p className=' cursor-pointer' onClick={handleClose}>
+            <div className=' cursor-pointer' onClick={handleClose}>
                 {setIsShowDropDownDispo ? <p className='text-white bg-black text-white px-6 py-1 text-sm'>Fermer</p> : ""}
-            </p>
+            </div>
         </div>   
     );
 }

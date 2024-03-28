@@ -2,7 +2,7 @@ const router = require('express').Router()
 const productController = require('../Controllers/productController')
 
 router.get('/getAllProduct', productController.getAllProduct)
-router.get('/getAllProductByCategorie/:choix_categorie', productController.getProductByCategorieWithTags)
+router.post('/getAllProductByCategorie/:choix_categorie', productController.getProductByCategorieWithTags)
 router.get('/getProductById/:choix_categorie/:id', productController.getProductById)
 router.get('/updateProductById', productController.updateProduct)
 router.get('/deleteProductById', productController.deleteProductById)

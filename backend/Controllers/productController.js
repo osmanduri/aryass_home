@@ -14,9 +14,14 @@ module.exports.getAllProduct = async (req, res) => {
 }
 
 module.exports.getProductByCategorieWithTags = async (req, res) => {
+  console.log(req.body)
+
+  const {dispo, priceMin, priceMax, sortBy} = req.body
+
+  console.log(dispo)
     try{
         console.log(req.params.choix_categorie)
-        const productsByCategorieWithTag = await this.getWithTag(req.params.choix_categorie);
+        const productsByCategorieWithTag = await this.getWithTag(req.params.choix_categorie, dispo, priceMin, priceMax, sortBy);
 
         res.send(productsByCategorieWithTag)
     }catch(err){
@@ -103,7 +108,7 @@ module.exports.addProduct = async (req, res) => {
     }
 }
 
-module.exports.getWithTag = async (choix_categorie) => {
+module.exports.getWithTag = async (choix_categorie, dispo, priceMin1, priceMax1, sortBy) => {
     let matchCondition = { 'categorie': choix_categorie };
     const priceMin = null;
     const priceMax = null;
@@ -149,7 +154,8 @@ module.exports.getWithTag = async (choix_categorie) => {
       },
       {
         '$sort': { // Trier par nomProduit et ensuite par tags.augmentation si nécessaire
-          'nomProduit': 1
+          'nomProduit': 1,
+          'prix': 1
         }
       }
     ];

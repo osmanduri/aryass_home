@@ -3,8 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Définition explicite des types pour l'état initial
 interface FilterState {
     dispo: string[]; // dispo est toujours un tableau de strings
-    priceMin: number | null;
     priceMax: number | null;
+    priceMin: number | null;
     sortBy: string;
     pending: boolean;
     error: boolean;
@@ -13,8 +13,8 @@ interface FilterState {
 // État initial avec les types spécifiés
 const initialState: FilterState = {
     dispo: [], // Initialise dispo comme un tableau vide au lieu de null
-    priceMin: null,
     priceMax: null,
+    priceMin: null,
     sortBy: '',
     pending: false,
     error: false,

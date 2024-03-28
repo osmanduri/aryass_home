@@ -86,7 +86,7 @@ export default function Menu({nbProduct}:MenuProps) {
             <div className='relative'>
             <div className="cursor-pointer flex items-center font-normal text-sm gap-1" onClick={() => handleShowDropDownMenuListeProduit('dispo')}>Disponibilité<div><MdOutlineKeyboardArrowDown/></div></div>
               <div className='absolute z-50 top-8'>
-                {isShowDropDownDispo && <DropdownDispo setIsShowDropDownDispo={setIsShowDropDownDispo}/>}
+                {isShowDropDownDispo && <DropdownDispo setIsShowDropDownDispo={setIsShowDropDownDispo} nbProduct={nbProduct}/>}
               </div>
             </div>
 

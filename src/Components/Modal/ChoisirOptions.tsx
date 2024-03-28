@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Select, Option } from "@material-tailwind/react";
 import { FaPlus } from "react-icons/fa6";
 import { FiMinus } from "react-icons/fi";
-import { ajouterArticleSelonQuantite } from '../../redux/panierSlice';
+import { ajouterArticleSelonQuantite, supprimerArticle } from '../../redux/panierSlice';
+import { Link } from 'react-router-dom';
 
 interface ChoisirOptionsProps {
     isDialogOpen:boolean;
@@ -23,35 +24,55 @@ interface ChoisirOptionsProps {
 
 
 export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, setShowArticleAjoute}:ChoisirOptionsProps) {
+  //@ts-ignore
+  const panierRedux = useSelector(state => state.panier)
   const dispatch = useDispatch()
   const [value, setValue] = useState<number>(1)
-  const [startPrice, setStartPrice] = useState(element.prix);
-  const [taillePrice, setTaillePrice] = useState(0);
-  const [matelatPrice, setMatelatPrice] = useState(0);
+  const startPrice = element.prix;
   const [finalPrice, setFinalPrice] = useState(startPrice);
+  const [select, setSelect] = useState<any>([])
   
   useEffect(() => {
-    setFinalPrice(startPrice + taillePrice + matelatPrice);
-  }, [startPrice, taillePrice, matelatPrice]);
+    if (element && element.tags) {
+        const defaultTags :any[] = [];
+        const typeMap: { [key: string]: any } = {};
+
+        element.tags.forEach((e:any) => {
+            if (e.augmentation === 0 && !(e.type in typeMap)) {
+                defaultTags.push(e);
+                typeMap[e.type] = true; // Marquer le type comme ajouté
+            }
+        });
+
+        setSelect(defaultTags);
+    }
+}, [element]);
+
+useEffect(() => {
+  if(select.length > 0){
+      let augmentation = 0;
+
+      select.forEach((e:any) => {
+          augmentation = augmentation + e.augmentation;
+      })
+
+
+      let prix_total = startPrice + augmentation;
+      setFinalPrice(prix_total)
+  }
+  
+}, [select])
+
 
   const handleUpdateValue = (choix:string) => {
       if(choix === 'plus'){
           if(value < 5)
-          setValue(prev => prev +1)
+          setValue(prev => prev + 1)
       }else{
           if(value > 1)
           setValue(prev => prev - 1)
       }
   }
-
-  const handleChangePrice = (e:any, choixTag:string) => {
-    if (choixTag === 'taille') {
-      setTaillePrice(e.augmentation); // Supplément de prix pour la taille
-    } else if (choixTag === 'matelat') {
-      setMatelatPrice(e.augmentation); // Supplément de prix pour le matelas
-    }
-    // Pas besoin d'appeler setFinalPrice ici car useEffect s'en charge
-  };
 
   // Cette fonction sera appelée lorsque l'overlay est cliqué
   const closeOnOverlayClick = (e:any) => {
@@ -71,17 +92,39 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
   };
 
   const handleAddPanier = async () => {
+    panierRedux.articles.map((e:any) => { // On vérifie si le produit qu'on ajoute dans le panier existe déjà pour le remplacer
+      if(element && e._id === element?._id){
+          dispatch(supprimerArticle(element._id))
+      }
+  })
     const payloadAddBasket = {
         _id:element?._id,
         nomProduit:element?.nomProduit,
         categorie:element?.categorie,
         img:element?.img,
         prix: finalPrice,
-        quantite:value
+        quantite:value,
+        tags:select
     }
     dispatch(ajouterArticleSelonQuantite(payloadAddBasket))
     setIsDialogOpen(false)
     setShowArticleAjoute(true)
+  }
+  
+  const handleChangeOption = (choixUser:any) => {
+    console.log(choixUser)
+    let index = select.findIndex((element:any) => element.type === choixUser.type)
+
+    console.log(index)
+
+    if(index === -1){
+        setSelect([...select, choixUser])
+    }else{
+        let newSelect = [...select]
+        newSelect.splice(index, 1)
+        newSelect.push(choixUser)
+        setSelect([...newSelect])
+    }
   }
 
   return (
@@ -125,7 +168,7 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
                                     if(e.type !== "taille") {
                                       return e.test=""
                                     }else
-                                    return <Option key={index} onClick={() => handleChangePrice(e, 'taille')}>{e.valeur}</Option>
+                                    return <Option key={index} onClick={() => handleChangeOption(e)}>{e.valeur}</Option>
                                   })
                                 }
                             </Select>
@@ -138,7 +181,7 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
                                     if(e.type !== "Choix Matelat") {
                                       return e.test=""
                                     }else
-                                    return <Option key={index} onClick={() => handleChangePrice(e, 'matelat')}>{e.valeur}</Option>
+                                    return <Option key={index} onClick={() => handleChangeOption(e)}>{e.valeur}</Option>
                                   })
                                 }
                             </Select>
@@ -151,7 +194,7 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
                                     if(e.type !== "Sommier") {
                                       return e.test=""
                                     }else
-                                    return <Option key={index} onClick={() => console.log(e)}>{e.valeur}</Option>
+                                    return <Option key={index} onClick={() => handleChangeOption(e)}>{e.valeur}</Option>
                                   })
                                 }
                             </Select>
@@ -164,7 +207,7 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
                                     if(e.type !== "Orientation") {
                                       return e.test=""
                                     }else
-                                    return <Option value="lol" key={index} onClick={() => console.log(e)}>{e.valeur}</Option>
+                                    return <Option key={index} onClick={() => handleChangeOption(e)}>{e.valeur}</Option>
                                   })
                                 }
                             </Select>
@@ -185,7 +228,7 @@ export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, 
                     </div>
                     
                 </div>
-                <div className='w-full'><p className='text-center hover:underline cursor-pointer'>Afficher tout les details</p></div>
+                <Link to={`/catalogue/${element.categorie}/${element._id}`}><div className='w-full'><p className='text-center hover:underline cursor-pointer'>Afficher tout les details</p></div></Link>
                 
             </div>
             </motion.div>

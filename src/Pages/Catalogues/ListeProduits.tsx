@@ -29,7 +29,6 @@ const variants = {
 };
 
 export default function ListeProduits({element}:ListeProduitsProps) {
-  console.log(element)
   const [showArticleAjoute, setShowArticleAjoute] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [onHover, setOnHover] = useState(false)
@@ -49,9 +48,10 @@ export default function ListeProduits({element}:ListeProduitsProps) {
         categorie:element.categorie,
         img:element.img,
         prix: element.prix,
-        quantite:1
+        quantite:1,
+        tags:[]
     }
-    //ajouterAuPanier(payloadAddBasket)
+
     dispatch(ajouterArticle(payloadAddBasket))
     setShowArticleAjoute(true);
   }

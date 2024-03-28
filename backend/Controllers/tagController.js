@@ -19,7 +19,8 @@ module.exports.addTag = async (req, res) => {
             categorie: req.body.categorie,
             type:req.body.type,
             augmentation: req.body.augmentation,
-            valeur: req.body.valeur
+            valeur: req.body.valeur,
+            label:req.body.label
         })
     
         const savedTag = await newTags.save()

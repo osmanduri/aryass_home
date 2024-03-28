@@ -4,6 +4,7 @@ import SinglePanier from '../Components/SinglePanier';
 import paypal_logo from '/paypal/paypal.png'
 import { useDispatch, useSelector } from "react-redux";
 import { viderPanierRedux } from "../redux/panierSlice";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 interface PanierItem {
   id: string;
@@ -17,9 +18,8 @@ interface PanierItem {
 export default function Panier() {
     const dispatch = useDispatch()
     //@ts-ignore
-    const user = useSelector(state => state.user)
-    //@ts-ignore
     const panierRedux = useSelector(state => state.panier)
+    console.log(panierRedux)
     const [totalPrice, setTotalPrice] = useState<number>(0)
 
     const almaTab = [
@@ -94,7 +94,7 @@ export default function Panier() {
         
         {/* Divider */}
         <div className="h-[1px] w-full bg-black opacity-10" />
-        <p  className="w-full flex justify-end underline  mt-2"><span onClick={handleViderPanier} className="cursor-pointer">Vider le panier</span></p>
+        <div className="flex items-center mt-4 gap-4 uppercase" onClick={handleViderPanier}><p  className="w-full flex justify-end underline"><span className="cursor-pointer">Vider le panier</span></p><FaRegTrashAlt /></div>
         <div className="h-40 mt-20">
             <div className="flex flex-col items-end max-md:items-center">
                 <p className="text-lg w-[320px] flex justify-between">Total estimé:<span className="ml-8"> €{totalPrice+".00"} EUR</span></p>

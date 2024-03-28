@@ -8,7 +8,8 @@ const tagSchema = new mongoose.Schema({
     categorie:String,
     type: String,
     augmentation: Number,
-    valeur:String
+    valeur:String,
+    label:String
   });
 
 module.exports = mongoose.model('tag', tagSchema);

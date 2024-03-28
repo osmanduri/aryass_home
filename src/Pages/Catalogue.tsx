@@ -15,11 +15,22 @@ export default function Catalogue() {
   const params = useParams()
 
   useEffect(() => {
+    console.log(filter)
+
+    const payloadFilter = {
+      dispo:filter.dispo,
+      priceMin:filter.priceMin,
+      priceMax:filter.priceMax,
+      sortBy:filter.sortBy
+
+    }
+    
     window.scrollTo(0, 0);
     const fetchProduct = async () => {
-      await axios.get(`http://localhost:5005/api/product/getAllProductByCategorie/${params.choix_categorie}`)
+      await axios.post(`http://localhost:5005/api/product/getAllProductByCategorie/${params.choix_categorie}`, payloadFilter)
       .then((res) => {
         setProductTab(res.data)
+                
       })
       .catch(err => console.log(err))
     }
@@ -47,3 +58,29 @@ export default function Catalogue() {
     </div>
   )
 }
+
+const calculePrixMaxEtStock = (data:any) => {
+  
+
+  //Calcule du prix Max
+  const prixMax = data.reduce((max:number, produit:any) => produit.prix > max ? produit.prix : max, data[0].prix);
+  data.prixMax = prixMax
+
+
+  // Calcul du nombre de stock
+  data.stock = 0;
+  data.ruptureStock = 0;
+  data.forEach((element:any) => {
+    if(!element.dispo){
+      data.ruptureStock++;
+    }
+    if(element.dispo){
+      data.stock++;
+    }
+  });
+
+  return data
+
+}
+
+

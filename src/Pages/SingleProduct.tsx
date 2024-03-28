@@ -1,11 +1,11 @@
 import  { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from "axios";
 import { FaPlus } from "react-icons/fa6";
 import { FiMinus } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { ajouterArticleSelonQuantite } from "../redux/panierSlice";
+import { ajouterArticleSelonQuantite, supprimerArticle } from "../redux/panierSlice";
 import ArticleAjoute from "../Components/Modal/ArticleAjoute";
 import Taille from "../Components/TagsComponent/Taille";
 import ChoixMatelat from "../Components/TagsComponent/ChoixMatelat";
@@ -20,6 +20,15 @@ interface singleProductProps {
     tags:any;
 }
 
+interface choixUser {
+    _id:string;
+    tagId:string;
+    categorie:string;
+    type:string;
+    augmentation:number;
+    valeur:string;
+}
+
 // Définition des variantes pour l'animation
 const variants = {
     hidden: { y: -100, opacity: 0 },
@@ -27,6 +36,8 @@ const variants = {
   };
 
 export default function ProductDetails() {
+    //@ts-ignore
+    const panierRedux = useSelector(state => state.panier)
     const [showArticleAjoute, setShowArticleAjoute] = useState(false);
     const modalRef = useRef<HTMLDivElement | null>(null);
     const [value, setValue] = useState<number>(1);
@@ -36,7 +47,12 @@ export default function ProductDetails() {
     //@ts-ignore
     const user = useSelector(state => state.user)
     const dispatch = useDispatch()
-    
+
+    // State pour calculer les prix
+    const [startPrice, setStartPrice] = useState<number>(0);
+    const [finalPrice, setFinalPrice] = useState<number>(0);
+
+    const [select, setSelect] = useState<any>([])
 
     useEffect(() => {
         const fetchSingleProduct = async () => {
@@ -44,6 +60,7 @@ export default function ProductDetails() {
             .then((res:any) =>{
                 console.log(res.data)
                 setSingleProduct(res.data)
+                setStartPrice(res.data.prix)
                 
             })
             .catch(err => console.log(err))
@@ -51,9 +68,57 @@ export default function ProductDetails() {
         fetchSingleProduct()
     }, [])
 
+
+    useEffect(() => {
+        if (singleProduct && singleProduct.tags) {
+            const defaultTags :any[] = [];
+            const typeMap: { [key: string]: any } = {};
+    
+            singleProduct.tags.forEach((e:any) => {
+                if (e.augmentation === 0 && !(e.type in typeMap)) {
+                    defaultTags.push(e);
+                    typeMap[e.type] = true; // Marquer le type comme ajouté
+                }
+            });
+    
+            setSelect(defaultTags);
+        }
+    }, [singleProduct]);
+
+    useEffect(() => {
+        if(select.length > 0){
+            let augmentation = 0;
+
+            select.forEach((e:any) => {
+                augmentation = augmentation + e.augmentation;
+            })
+
+
+            let prix_total = startPrice + augmentation;
+            setFinalPrice(prix_total)
+        }
+        
+    }, [select])
+
+      const handleChangeOption = (choixUser:choixUser) => {
+        console.log(choixUser)
+        let index = select.findIndex((element:any) => element.type === choixUser.type)
+
+        console.log(index)
+
+        if(index === -1){
+            setSelect([...select, choixUser])
+        }else{
+            let newSelect = [...select]
+            newSelect.splice(index, 1)
+            newSelect.push(choixUser)
+            setSelect([...newSelect])
+        }
+      }
+    
     const handleUpdateValue = (choix: string) => {
         if(choix === 'plus'){
-            if(value < 10)
+            if(value < 5)
             setValue(prev => prev +1)
         }else{
             if(value > 1)
@@ -70,14 +135,22 @@ export default function ProductDetails() {
     };
 
     const handleAddPanier = async () => {
+        panierRedux.articles.map((e:any) => { // On vérifie si le produit qu'on ajoute dans le panier existe déjà pour le remplacer
+            if(singleProduct && e._id === singleProduct?._id){
+                dispatch(supprimerArticle(singleProduct._id))
+            }
+        })
         const payloadAddBasket = {
             _id: singleProduct?._id,
             nomProduit: singleProduct?.nomProduit,
             categorie: singleProduct?.categorie,
             img: singleProduct?.img,
-            prix: singleProduct?.prix,
-            quantite: value
+            prix: finalPrice,
+            quantite: value,
+            tags:select
         }
+
+       
         dispatch(ajouterArticleSelonQuantite(payloadAddBasket))
         setShowArticleAjoute(true)
       }
@@ -110,42 +183,30 @@ export default function ProductDetails() {
                     <div className="flex flex-col">
                         <h1 className="text-xs uppercase">Arya's home</h1>
                         <h2 className="text-3xl font-bold mb-4">{singleProduct.nomProduit}</h2>
-                        <p className="text-xl font-semibold">{singleProduct.prix+".00"} €</p>
+                        <p className="text-xl font-semibold">{finalPrice+".00"} €</p>
                         <p className="mb-2">Taxes incluses.</p>
   
                         {/* Size selection */}
                         <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' ? {display:"none"}: {}}>
                             {
-                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'taille') && <Taille options={singleProduct.tags.filter((tag:any) => tag.type === "taille")}/>
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'taille') && <Taille options={singleProduct.tags.filter((tag:any) => tag.type === "taille")} handleChangeOption={handleChangeOption} select={select}/>
                             }
                         </div>
                         <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' ? {display:"none"}: {}}>
                             {
-                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Choix Matelat') && <ChoixMatelat options={singleProduct.tags.filter((tag:any) => tag.type === "Choix Matelat")}/>
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Choix Matelat') && <ChoixMatelat options={singleProduct.tags.filter((tag:any) => tag.type === "Choix Matelat")} handleChangeOption={handleChangeOption} select={select}/>
                             }
                         </div>
                         <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'canape' ? {display:"none"}: {}}>
                             {
-                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Orientation') && <StyleCanape options={singleProduct.tags.filter((tag:any) => tag.type === "Orientation")}/>
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Orientation') && <StyleCanape  options={singleProduct.tags.filter((tag:any) => tag.type === "Orientation")} handleChangeOption={handleChangeOption} select={select}/>
                             }
                         </div>
 
-                        {/*<div className="flex flex-wrap items-center gap-2 mb-4 mt-4">
-                            <p className="font-semibold w-full">Taille du Matelas</p>
-                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">NON- SANS MATELAS</p>
-                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 20 CM</p>
-                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 22 CM</p>
-                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 25 CM</p>
-                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 27 CM</p>
-                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 30 CM</p>
-                            <p className="border border-black px-3 py-2 max-lp:px-2 max-lp:py-1 rounded-full text-sm">OUI AVEC MATELAS - 32 CM</p>
-
-                        </div>*/}
-  
                         {/* Quantity adjustment */}
                         <div className="flex items-center gap-4 mb-6 mt-14">
                             <p className="font-semibold">Quantité</p>
-                            <div className='w-[142px] h-[50px] border border-black flex justify-between items-center'> <FiMinus onClick={() => handleUpdateValue('minus')} className="ml-3" size={10}/><span>{value}</span><FaPlus onClick={() => handleUpdateValue('plus')} size={10} className="mr-3"/> </div>
+                            <div className='w-[142px] h-[50px] border border-black flex justify-between items-center'> <FiMinus onClick={() => handleUpdateValue('minus')} className="ml-3 cursor-pointer" size={10}/><span>{value}</span><FaPlus onClick={() => handleUpdateValue('plus')} size={10} className="mr-3 cursor-pointer"/> </div>
                         </div>
   
                         {/* Action buttons */}
