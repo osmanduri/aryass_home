@@ -30,10 +30,10 @@
   top: 0;
   left: 0;
   right: 0;
-  transform: translateY(-100%); /* Démarre hors de l'écran */
+  transform: translateY(-130%); /* Démarre hors de l'écran */
   background: white; /* Ou toute autre couleur de fond */
-  z-index: 1; /* Assure-toi qu'elle apparaît au-dessus des autres éléments */
-  overflow: hidden;
+  z-index: 101; /* Assure-toi qu'elle apparaît au-dessus des autres éléments */
+  //overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,7 +43,7 @@
 
 .searchBarActive {
   transform: translateY(0%); /* Glisse en place */
-  overflow: hidden;
+  //overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;

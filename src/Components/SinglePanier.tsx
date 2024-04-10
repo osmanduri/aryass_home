@@ -6,7 +6,6 @@ import { FiMinus } from "react-icons/fi";
 import { increaseArticle, decreaseArticle, supprimerArticle } from '../redux/panierSlice';
 
 export default function PanierComponent({element}:any) {
-
   const dispatch = useDispatch()
 
       const handleUpdateValue = async (choix:string) => {
@@ -27,17 +26,17 @@ export default function PanierComponent({element}:any) {
   return (
     <div className="flex items-center py-5 max-md:items-start">
     <div className="flex w-3/5 max-md:w-4/5"> 
-      <Link to={`/catalogue/${element.categorie}/${element._id}`} className='cursor-pointer h-[120px] w-[120px] max-sm:w-[90px] max-md:h-[90px] block'>
-        <img className="h-full w-full" src={element.img[0]} alt="canape" />
+      <Link to={`/catalogue/${element.categorie}/${element._id}`} className='cursor-pointer w-[120px] h-[120px] max-md:w-[90px] max-md:h-[90px]'>
+        <img className="w-full h-full object-fill" src={element.img[0]} alt="canape" />
       </Link>
-      <div className="flex flex-col ml-4 gap-1">
-        <Link to={`/catalogue/${element.categorie}/${element._id}`} className="text-lg text-gray-900 font-semibold hover:underline max-sm:text-sm max-sm:w-[80%]">{element.nomProduit}</Link>
+      <div className="flex flex-col ml-4 gap-1 max-md:w-[160px]">
+        <Link to={`/catalogue/${element.categorie}/${element._id}`} className="text-lg text-gray-900 font-semibold hover:underline max-sm:text-sm max-lg:w-[290px] max-md:w-[200px] max-sm:w-[150px]">{element.nomProduit}</Link>
         <span className="text-lg font-semibold max-sm:text-sm max-sm:w-2/5">€ {element.prix+".00"}</span>
           {
             
-            element.tags.length > 0 ? element.tags.map((e:any) => {
+            element.tags.length > 0 ? element.tags.map((e:any, index:number) => {
               return (
-                <p className="text-sm max-sm:text-xs capitalize">{e.type}: {e.valeur}</p>
+                <p key={index} className="text-sm max-sm:text-xs capitalize max-md:w-[160px]">{e.type}: {e.valeur}</p>
               )
             })
             :
@@ -56,7 +55,7 @@ export default function PanierComponent({element}:any) {
               <FaRegTrashAlt size={20} className='ml-4 cursor-pointer' onClick={handleDeleteItem}/>
       </div>
     </div>
-    <span className="text-center w-1/5 font-bold text-lg text-end max-md:w-2/5 max-md:text-md">€{element.prix+'.00'}</span>
+    <span className="text-center w-1/5 font-bold text-lg text-end max-md:w-2/5 max-md:text-sm max-sm:font-bold">€{element.prix*element.quantite + '.00'}</span>
   </div>
   )
 }

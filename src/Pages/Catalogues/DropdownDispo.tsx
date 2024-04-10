@@ -17,6 +17,8 @@ export default function DropdownDispo({ setIsShowDropDownDispo, width, height, n
     const dispatch = useDispatch();
     //@ts-ignore
     const dispo = useSelector((state) => state.filter.dispo);
+    //@ts-ignore
+    const productDetailsRedux = useSelector((state) => state.filter)
 
     const style = {
         width:width+'px',
@@ -68,13 +70,13 @@ export default function DropdownDispo({ setIsShowDropDownDispo, width, height, n
                     <input type="checkbox" id="checkbox-stock" className="cursor-pointer"
                            onChange={() => handleSelection('En stock')}
                            checked={selectedOptions.includes('En stock')} />
-                    <label htmlFor="checkbox-stock" className="ml-2">En stock ({nbProduct})</label>
+                    <label htmlFor="checkbox-stock" className="ml-2">En stock ({productDetailsRedux.nbStock})</label>
                 </div>
                 <div className="flex items-center">
                     <input type="checkbox" id="checkbox-out-of-stock" className="cursor-pointer"
                            onChange={() => handleSelection('Rupture de stock')}
                            checked={selectedOptions.includes('Rupture de stock')} />
-                    <label htmlFor="checkbox-out-of-stock" className="ml-2">Rupture de stock (1)</label>
+                    <label htmlFor="checkbox-out-of-stock" className="ml-2">Rupture de stock ({productDetailsRedux.nbRuptureStock})</label>
                 </div>
             </div>
             <div className=' cursor-pointer' onClick={handleClose}>

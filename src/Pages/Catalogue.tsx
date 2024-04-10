@@ -1,22 +1,21 @@
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom";
 import ListeProduits from "./Catalogues/ListeProduits"
 import Menu from "./Catalogues/Menu"
-//import { canape } from "../../data/catalogues"
 import axios from 'axios'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import MenuDetailsFilter from "./Catalogues/MenuDetailsFilter";
 import { useParams } from "react-router-dom";
+import AucunProduitTrouvé from "./Catalogues/AucunProduitTrouvé";
+import { updateDetailsProduct } from "../redux/filterSlice";
 
 export default function Catalogue() {
   //@ts-ignore
   const filter = useSelector((state) => state.filter);
   const [productTab, setProductTab] = useState([])
   const params = useParams()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log(filter)
-
     const payloadFilter = {
       dispo:filter.dispo,
       priceMin:filter.priceMin,
@@ -30,7 +29,14 @@ export default function Catalogue() {
       await axios.post(`http://localhost:5005/api/product/getAllProductByCategorie/${params.choix_categorie}`, payloadFilter)
       .then((res) => {
         setProductTab(res.data)
+        console.log(res.data)
                 
+      })
+      .catch(err => console.log(err))
+
+      await axios.get(`http://localhost:5005/api/product/getProductDetails/${params.choix_categorie}`)
+      .then((res:any) => {
+        dispatch(updateDetailsProduct(res.data))
       })
       .catch(err => console.log(err))
     }
@@ -44,14 +50,15 @@ export default function Catalogue() {
       <div className="max-w-[1536px] mx-auto p-10">
         <Menu nbProduct={productTab.length}/>
         <MenuDetailsFilter/>
-      <div className="flex flex-wrap justify-between mt-12 max-lp:justify-center">
+      <div className="flex flex-wrap justify-start mt-12 max-lp:justify-center">
         {
           productTab.map((element, index) => {
             return (
-              <ListeProduits element={element} key={index}/>
+              <ListeProduits element={element} index={index}/>
             )
           })
         }
+        {productTab.length === 0 && <AucunProduitTrouvé/>}
       </div>
       </div>
       
@@ -59,28 +66,5 @@ export default function Catalogue() {
   )
 }
 
-const calculePrixMaxEtStock = (data:any) => {
-  
-
-  //Calcule du prix Max
-  const prixMax = data.reduce((max:number, produit:any) => produit.prix > max ? produit.prix : max, data[0].prix);
-  data.prixMax = prixMax
-
-
-  // Calcul du nombre de stock
-  data.stock = 0;
-  data.ruptureStock = 0;
-  data.forEach((element:any) => {
-    if(!element.dispo){
-      data.ruptureStock++;
-    }
-    if(element.dispo){
-      data.stock++;
-    }
-  });
-
-  return data
-
-}
 
 

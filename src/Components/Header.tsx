@@ -61,10 +61,10 @@ export default function Header() {
             </div>
         </div>
         <div className='bg-[#101010] h-full flex items-center justify-center' style={{ opacity: opacity, transition: 'opacity 0.3s ease' }}>
-            <p className='text-white text-center text-sm max-sm:text-xs max-sm:pl-4 max-sm:pr-4'>Livraison offerte en Île-de-France dans un délai de 7 à 10 jours.</p>
+            <p className='text-white text-center text-sm max-sm:text-xs max-sm:pl-4 max-sm:pr-4'>Livraison offerte en Île-de-France dans un délai de 4 à 10 jours.</p>
         </div>
         <div className='bg-[#101010] h-full flex items-center justify-center' style={{ opacity: opacity, transition: 'opacity 0.3s ease' }}>
-            <p className='text-white text-center text-sm max-sm:text-xs max-sm:pl-4 max-sm:pr-4'>Livraison en dehors de l'Île-de-France effectuée dans un délai de 2 à 4 semaines.</p>
+            <p className='text-white text-center text-sm max-sm:text-xs max-sm:pl-4 max-sm:pr-4'>Livraison hors Île-de-France effectuée dans un délai de 2 à 4 semaines.</p>
         </div>
     </Carousel>
     </div>

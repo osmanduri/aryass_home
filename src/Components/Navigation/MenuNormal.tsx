@@ -13,17 +13,17 @@ export default function MenuNormal() {
                             <NavLink to="/catalogue/lit_cadre" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             LIT CADRE 
                             </NavLink>
-                            <NavLink to="/matelat" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
+                            <NavLink to="/catalogue/matelas" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             MATELAS & SOMMIER 
                             </NavLink>
                             <NavLink to="/catalogue/canape" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             CANAPÉ
                             </NavLink>
-                            <NavLink to="/chevet" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
+                            <NavLink to="/catalogue/chevet" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             CHEVET
                             </NavLink>
-                            <NavLink to="/lit_coffre_enfant" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
-                            LIT COFFRE ENFANTS
+                            <NavLink to="/catalogue/lit_coffre_une_place" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
+                            LIT COFFRE SINGLE
                             </NavLink>
                             <NavLink to="/contact" className={({isActive}) => isActive ? "nav-active": "non-active-class" }>
                             CONTACT

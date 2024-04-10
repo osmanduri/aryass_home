@@ -8,6 +8,9 @@ interface FilterState {
     sortBy: string;
     pending: boolean;
     error: boolean;
+    priceMaxProduct:number;
+    nbStock:number;
+    nbRuptureStock:number;
 }
 
 // État initial avec les types spécifiés
@@ -18,6 +21,9 @@ const initialState: FilterState = {
     sortBy: '',
     pending: false,
     error: false,
+    priceMaxProduct:0,
+    nbStock:0,
+    nbRuptureStock:0
 };
 
 const filterSlice = createSlice({
@@ -35,11 +41,17 @@ const filterSlice = createSlice({
             state.priceMin = action.payload;
         },
           setPriceMax: (state, action: PayloadAction<number | null>) => {
+            console.log(action)
             state.priceMax = action.payload;
         },
         setSortBy: (state, action: PayloadAction<string>) => {
             state.sortBy = action.payload;
           },
+          updateDetailsProduct: (state, action) => {
+            state.priceMaxProduct = action.payload.maxPrice;
+            state.nbStock = action.payload.totalEnStock === undefined ? 0 : action.payload.totalEnStock;
+            state.nbRuptureStock = action.payload.totalRuptureDeStock === undefined ? 0 : action.payload.totalRuptureDeStock;
+        },
         updateError: (state) => {
             state.error = true;
             state.pending = false;
@@ -51,9 +63,10 @@ const filterSlice = createSlice({
             state.pending = false;
             state.error = false;
         },
+
         // Ajoutez ou ajustez les autres reducers selon vos besoins.
     },
 });
 
-export const { updateStart, setDispo, setPriceMin, setPriceMax, setSortBy, updateError, resetState } = filterSlice.actions;
+export const { updateStart, setDispo, setPriceMin, setPriceMax, setSortBy, updateDetailsProduct, updateError, resetState } = filterSlice.actions;
 export default filterSlice.reducer;

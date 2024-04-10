@@ -33,7 +33,7 @@ const productSchema = new mongoose.Schema({
         default:null
     },
     dispo:{
-        type:Boolean
+        type:String
     },
     promo:{
         type:Boolean
@@ -44,6 +44,10 @@ const productSchema = new mongoose.Schema({
     date_creation_product: {
         type: String,
         default: moment().format('LLL')
+    },
+    vente:{
+        type:Number,
+        default:0
     },
     }, {
         timestamps: true

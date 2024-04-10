@@ -14,6 +14,7 @@ export default function DropdownTrier({ width }: DropdownTrierProps) {
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSort = event.target.value;
+    console.log(selectedSort)
     dispatch(setSortBy(selectedSort)); // Dispatcher le choix de l'utilisateur
   };
 

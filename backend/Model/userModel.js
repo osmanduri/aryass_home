@@ -1,33 +1,29 @@
 const mongoose = require('mongoose')
 const moment = require('moment');
 moment.locale('fr');
-const path = require('path')
 
-//const chemin_img = path.join(__dirname, "../Profil")
 const userSchema = new mongoose.Schema({
 
     nom: {
         type: String,
         minLength: 2,
         maxLength: 55,
-        unique: true,
         trimp: true,
-        index: true
     },
     prenom: {
         type: String,
         minLength: 2,
         maxLength: 55,
-        unique: true,
         trimp: true,
-        index: true
     },
     email: {
         type: String,
         required: true,
-        unique: true,
         trim: true,
-        index: true
+    },
+    entreprise:{
+        type:String,
+        trim:true
     },
     adresse:{
         type:String,
@@ -38,6 +34,14 @@ const userSchema = new mongoose.Schema({
         trim:true
     },
     pays:{
+        type:String,
+        trim:true
+    },
+    codePostal:{
+        type:String,
+        trim:true
+    },
+    telephone:{
         type:String,
         trim:true
     },

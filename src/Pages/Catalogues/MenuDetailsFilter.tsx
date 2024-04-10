@@ -38,9 +38,9 @@ export default function MenuDetailsFilter() {
                     </div>
                 )}
                 {/* Gère explicitement la condition pour afficher la div même si priceMin est 0 */}
-                {(filter.priceMin !== null && filter.priceMax !== null) && (
+                {(filter.priceMin !== null || filter.priceMax !== null) && (
                 <div className='flex items-center justify-center border border-black py-1 px-4 rounded-full text-sm text-black gap-2'>
-                    {filter.priceMin ?? '0'} € - {filter.priceMax ? `${filter.priceMax} €` : 'Non spécifié'}
+                    {filter.priceMin ?? '0'} € - {filter.priceMax ? `${filter.priceMax} €` : 'Max'}
                     <RxCross1 size={12} className='cursor-pointer' onClick={handleRemovePriceFilter}/>
                 </div>
                 )}

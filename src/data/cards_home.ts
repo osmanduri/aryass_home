@@ -1,6 +1,7 @@
 interface CardHomeItems {
         name:string;
         img:string;
+        url:string;
     
   }
 
@@ -8,27 +9,33 @@ interface CardHomeItems {
 export const card_home:CardHomeItems[] = [
     {
         name:"LIT COFFRE",
-        img:"1_compress.jpg"
+        img:"lit_coffre.webp",
+        url:"/catalogue/lit_coffre"
     },
     {
         name:"LIT CADRE",
-        img:"1_compress.jpg"
+        img:"lit_cadre.webp",
+        url:"/catalogue/lit_cadre"
     },
     {
         name:"MATELAS + SOMMIER",
-        img:"1_compress.jpg"
+        img:"matelas.webp",
+        url:"/catalogue/matelas"
     },
     {
         name:"CANAPÉ",
-        img:"1_compress.jpg"
+        img:"canape.webp",
+        url:"/catalogue/canape"
     },
     {
         name:"CHEVET ",
-        img:"1_compress.jpg"
+        img:"chevet.webp",
+        url:"/catalogue/chevet"
     },
     {
         name:"LIT COFFRE ENFANTS",
-        img:"1_compress.jpg"
+        img:"lit_coffre_enfant.webp",
+        url:"/catalogue/lit_coffre_enfant"
     },
 ]
 

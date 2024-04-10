@@ -10,6 +10,9 @@ import ArticleAjoute from "../Components/Modal/ArticleAjoute";
 import Taille from "../Components/TagsComponent/Taille";
 import ChoixMatelat from "../Components/TagsComponent/ChoixMatelat";
 import StyleCanape from "../Components/TagsComponent/StyleCanape";
+import useOutsideClick from './Catalogues/ClickOutside/useOutsideClick';
+import Sommier from "../Components/TagsComponent/Sommier";
+
 
 interface singleProductProps {
     _id:string;
@@ -53,6 +56,12 @@ export default function ProductDetails() {
     const [finalPrice, setFinalPrice] = useState<number>(0);
 
     const [select, setSelect] = useState<any>([])
+
+    useOutsideClick(modalRef, () => setShowArticleAjoute(false))
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
 
     useEffect(() => {
         const fetchSingleProduct = async () => {
@@ -145,7 +154,7 @@ export default function ProductDetails() {
             nomProduit: singleProduct?.nomProduit,
             categorie: singleProduct?.categorie,
             img: singleProduct?.img,
-            prix: finalPrice,
+            prix: finalPrice ? finalPrice : startPrice,
             quantite: value,
             tags:select
         }
@@ -155,8 +164,10 @@ export default function ProductDetails() {
         setShowArticleAjoute(true)
       }
 
-      if (!singleProduct) return <p>Loading...</p>;
+      if (!singleProduct) return <p>Loading...</p>
 
+
+      
     return (
         <>
         <div className="bg-[#F3F3F3]">
@@ -183,18 +194,23 @@ export default function ProductDetails() {
                     <div className="flex flex-col">
                         <h1 className="text-xs uppercase">Arya's home</h1>
                         <h2 className="text-3xl font-bold mb-4">{singleProduct.nomProduit}</h2>
-                        <p className="text-xl font-semibold">{finalPrice+".00"} €</p>
+                        <p className="text-xl font-semibold">{finalPrice ? finalPrice+".00" : startPrice+".00"} €</p>
                         <p className="mb-2">Taxes incluses.</p>
   
                         {/* Size selection */}
-                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' ? {display:"none"}: {}}>
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' && singleProduct.categorie !== 'lit_cadre' ? {display:"none"}: {}}>
                             {
-                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'taille') && <Taille options={singleProduct.tags.filter((tag:any) => tag.type === "taille")} handleChangeOption={handleChangeOption} select={select}/>
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Taille') && <Taille options={singleProduct.tags.filter((tag:any) => tag.type === "Taille")} handleChangeOption={handleChangeOption} select={select}/>
                             }
                         </div>
-                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' ? {display:"none"}: {}}>
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' && singleProduct.categorie !== 'lit_cadre' ? {display:"none"}: {}}>
                             {
-                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Choix Matelat') && <ChoixMatelat options={singleProduct.tags.filter((tag:any) => tag.type === "Choix Matelat")} handleChangeOption={handleChangeOption} select={select}/>
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Choix Matelas') && <ChoixMatelat options={singleProduct.tags.filter((tag:any) => tag.type === "Choix Matelas")} handleChangeOption={handleChangeOption} select={select}/>
+                            }
+                        </div>
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_cadre' ? {display:"none"}: {}}>
+                            {
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Sommier') && <Sommier options={singleProduct.tags.filter((tag:any) => tag.type === "Sommier")} handleChangeOption={handleChangeOption} select={select}/>
                             }
                         </div>
                         <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'canape' ? {display:"none"}: {}}>
@@ -258,7 +274,7 @@ export default function ProductDetails() {
         style={{ backdropFilter: 'blur(3px)' }} // Optionnel: flou de l'arrière-plan
       >
           <div ref={modalRef}>
-            <ArticleAjoute element={singleProduct} setShowArticleAjoute={setShowArticleAjoute}/>
+            <ArticleAjoute element={singleProduct} setShowArticleAjoute={setShowArticleAjoute} select={select}/>
           </div>
         </motion.div>
       )}

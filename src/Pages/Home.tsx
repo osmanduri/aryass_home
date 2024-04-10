@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import CardsHome from "../Components/CardsHome";
 import SliderVideo from "../Components/SliderVideo";
 import { card_home } from "../data/cards_home";
@@ -13,12 +14,50 @@ import { FaCircleArrowRight } from "react-icons/fa6";
 import NouvelleCollection from "./Home/NouvelleCollection";
 import HomeListeProduits from "./Home/HomeListeProduits";
 import ShowHomeProductFeatures from "./Home/ShowHomeProductFeatures";
+import axios from 'axios'
+
+
+
+
 
 export default function Home() {
+
+
+  const useFetchProducts = () => {
+    const [products, setProducts] = useState({
+      litCoffre: [],
+      litCadre: [],
+      canape: [],
+    });
+  
+    useEffect(() => {
+      const fetchAllProducts = async () => {
+        try {
+          const res = await axios.get('http://localhost:5005/api/product/getAllProduct');
+  
+          const newProducts = {
+            litCoffre: res.data.filter((e:any) => e.categorie === 'lit_coffre').slice(0, 3),
+            litCadre: res.data.filter((e:any) => e.categorie === 'lit_cadre').slice(0, 3),
+            canape: res.data.filter((e:any) => e.categorie === 'canape').slice(0, 3),
+          };
+  
+          setProducts(newProducts);
+        } catch (error) {
+          console.error('Error fetching products:', error);
+        }
+      };
+  
+      fetchAllProducts();
+    }, []);
+  
+    return products;
+  };
+
+  const { litCoffre, litCadre, canape } = useFetchProducts();
   return (
     <>
       <SliderVideo/>
-      <h1 className="text-center text-3xl font-semibold underline mt-24 text-black ">NOS CATEGORIES</h1>
+      <h1 className="text-center text-3xl font-semibold underline mt-24 text-black max-sm:text-lg">NOS CATEGORIES</h1>
       <Swiper
         scrollbar={true}
         slidesPerView={4}
@@ -70,13 +109,13 @@ export default function Home() {
       <NouvelleCollection/>
       </div>
       <div className="mt-44">
-        <HomeListeProduits titre="Lit coffre"/>
+        <HomeListeProduits titre="Lit coffre" categorie={litCoffre} link="/catalogue/lit_coffre"/>
       </div>
       <div className="mt-44">
-        <HomeListeProduits titre="Canapé"/>
+        <HomeListeProduits titre="Canapé" categorie={canape} link="/catalogue/canape"/>
       </div>
       <div className="mt-44">
-        <HomeListeProduits titre="Cadre de lit"/>
+        <HomeListeProduits titre="Cadre de lit" categorie={litCadre} link="/catalogue/lit_cadre"/>
       </div>
       <div className="mt-44">
         <ShowHomeProductFeatures/>

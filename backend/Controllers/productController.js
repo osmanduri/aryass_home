@@ -4,24 +4,37 @@ const moment = require('moment')
 moment.locale('fr')
 
 module.exports.getAllProduct = async (req, res) => {
-    try{
-        const productsWithTag = await this.getWithTag();
+  console.log(req.body.recherche)
+  try{
+      const productsWithTag = await productModel.find();
 
-        res.send(productsWithTag)
+      res.send(productsWithTag)
+  }catch(err){
+      res.send(err)
+  }
+}
+
+module.exports.getAllProductRecherche = async (req, res) => {
+    console.log(req.body.recherche)
+    try{
+        const productsWithTag = await this.getAllProductWithTag(req.body.recherche);
+
+        if(productsWithTag.length > 0){
+          res.status(200).send(productsWithTag)
+        }else{
+          res.status(404).send('Aucun produit trouvé')
+        }
+        
     }catch(err){
         res.send(err)
     }
 }
 
 module.exports.getProductByCategorieWithTags = async (req, res) => {
-  console.log(req.body)
+   const {dispo, priceMin, priceMax, sortBy} = req.body
 
-  const {dispo, priceMin, priceMax, sortBy} = req.body
-
-  console.log(dispo)
     try{
-        console.log(req.params.choix_categorie)
-        const productsByCategorieWithTag = await this.getWithTag(req.params.choix_categorie, dispo, priceMin, priceMax, sortBy);
+        const productsByCategorieWithTag = await this.getWithTag(req.params.choix_categorie, dispo, priceMin, priceMax, sortBy);      
 
         res.send(productsByCategorieWithTag)
     }catch(err){
@@ -108,20 +121,98 @@ module.exports.addProduct = async (req, res) => {
     }
 }
 
-module.exports.getWithTag = async (choix_categorie, dispo, priceMin1, priceMax1, sortBy) => {
-    let matchCondition = { 'categorie': choix_categorie };
-    const priceMin = null;
-    const priceMax = null;
-    // Ajoutez la condition de prix seulement si priceMin et priceMax ne sont pas null
-    if (priceMin !== null || priceMax !== null) {
-        matchCondition.prix = {}; // Initialisez l'objet pour les conditions de prix
-        if (priceMin !== null) {
-            matchCondition.prix.$gte = priceMin; // Ajoutez la condition plus grand ou égal
-        }
-        if (priceMax !== null) {
-            matchCondition.prix.$lte = priceMax; // Ajoutez la condition moins grand ou égal
-        }
+module.exports.getAllProductWithTag = async (recherche) => { // Recherche pas nom
+
+  
+  let query = [
+    { 
+      $match: {
+      nomProduit: {
+        $regex: RegExp(recherche, 'i')
+      }
+    } },
+    { 
+      '$lookup': { // Joindre avec la collection de tags avant de déconstruire pour garder tous les produits
+        'from': 'tags',
+        'localField': 'tags',
+        'foreignField': 'tagId',
+        'as': 'tag_details'
+      }
+    },
+    {
+      '$unwind': { // Optionnel si vous voulez déconstruire le résultat du lookup
+        'path': '$tag_details',
+        'preserveNullAndEmptyArrays': true
+      }
+    },
+    { 
+      '$group': { // Regrouper à nouveau si `$unwind` est utilisé
+        '_id': '$_id',
+        'nomProduit': { '$first': '$nomProduit' },
+        'categorie': { '$first': '$categorie' },
+        'prix': { '$first': '$prix' },
+        'img': { '$first': '$img' },
+        'description': { '$first': '$description' },
+        'tags': { '$push': '$tag_details' },
+        'dispo': { '$first': '$dispo' },
+        'promo': { '$first': '$promo' }
+      }
+    },
+    {
+      '$sort': { // Trier par nomProduit et ensuite par tags.augmentation si nécessaire
+        'nomProduit': 1,
+        'prix': 1
+      }
     }
+  ];
+
+  const getTags = await productModel.aggregate(query)
+
+  return getTags
+}
+
+module.exports.getWithTag = async (choix_categorie, dispo, priceMin, priceMax, sortBy) => {
+  console.log(choix_categorie, sortBy)
+  let matchCondition = { 
+    'categorie': choix_categorie
+  };
+
+  const userSortChoice = sortBy; // exemple de choix utilisateur
+
+  // Définition de l'objet sortCondition basé sur les choix de l'utilisateur
+  let sortCondition = { nomProduit: 1};
+  const sortOptions = {
+    "En vedette": {"vedette": 1}, // Si aucune condition spéciale n'est requise pour "En vedette"
+    "Meilleures ventes": { "ventes": -1 }, // Suppose qu'il existe un champ "ventes"
+    "Alphabétique, de A à Z": { "nomProduit": 1 },
+    "Alphabétique, de Z à A": { "nomProduit": -1 },
+    "Prix: faible à élevé": { "prix": 1 },
+    "Prix: élevé à faible": { "prix": -1 },
+    "Date, de la plus ancienne à la plus récente": { "createdAt": 1 }, // Suppose qu'il existe un champ "dateCreation"
+    "Date, de la plus récente à la plus ancienne": { "createdAt": -1 },
+  };
+  
+  // Affecter la condition de tri basée sur le choix de l'utilisateur
+  sortCondition = sortOptions[userSortChoice] || sortCondition; 
+
+  console.log(sortCondition)
+  
+  // Vérifier si le tableau dispo contient des éléments
+  if (dispo.length > 0) {
+    // Si oui, ajouter la condition de filtrage sur dispo
+    matchCondition.dispo = { $in: dispo };
+  }
+  
+  // Ajoutez ici la logique de gestion de priceMin et priceMax si nécessaire
+  if (priceMin !== null || priceMax !== null) {
+      matchCondition.prix = {};
+      if (priceMin !== null) {
+          matchCondition.prix.$gte = priceMin;
+      }
+      if (priceMax !== null) {
+          matchCondition.prix.$lte = priceMax;
+      }
+  }
 
     let query = [
       { '$match': matchCondition },
@@ -153,10 +244,7 @@ module.exports.getWithTag = async (choix_categorie, dispo, priceMin1, priceMax1,
         }
       },
       {
-        '$sort': { // Trier par nomProduit et ensuite par tags.augmentation si nécessaire
-          'nomProduit': 1,
-          'prix': 1
-        }
+        '$sort': sortCondition
       }
     ];
     
@@ -221,4 +309,41 @@ module.exports.getWithTagById = async (choix_categorie, id) => {
       const getTags = await productModel.aggregate(query)
 
       return getTags   
+}
+
+
+module.exports.getProductDetails = async (req, res) => {
+  const categorie = req.params.choix_categorie; // Assurez-vous que cette variable correspond à votre route et paramètres
+  let query = [
+    {
+      $match: {
+        categorie: categorie // Filtrer par catégorie avant d'entrer dans $facet
+      }
+    },
+    {
+      $facet: {
+        "maxPrice": [
+          { $group: { _id: null, maxPrice: { $max: "$prix" } } }
+        ],
+        "totalEnStock": [
+          { $match: { dispo: "En stock" } },
+          { $count: "totalEnStock" }
+        ],
+        "totalRuptureDeStock": [
+          { $match: { dispo: "Rupture de stock" } },
+          { $count: "totalRuptureDeStock" }
+        ]
+      }
+    },
+    {
+      $project: {
+        maxPrice: { $arrayElemAt: ["$maxPrice.maxPrice", 0] },
+        totalEnStock: { $arrayElemAt: ["$totalEnStock.totalEnStock", 0] },
+        totalRuptureDeStock: { $arrayElemAt: ["$totalRuptureDeStock.totalRuptureDeStock", 0] }
+      }
+    }
+  ];
+
+  const getDetailsProduct = await productModel.aggregate(query);
+  res.send(getDetailsProduct[0]);
 }

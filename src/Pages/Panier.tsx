@@ -5,6 +5,8 @@ import paypal_logo from '/paypal/paypal.png'
 import { useDispatch, useSelector } from "react-redux";
 import { viderPanierRedux } from "../redux/panierSlice";
 import { FaRegTrashAlt } from "react-icons/fa";
+import {loadStripe} from '@stripe/stripe-js';
+import axios from "axios";
 
 interface PanierItem {
   id: string;
@@ -19,7 +21,10 @@ export default function Panier() {
     const dispatch = useDispatch()
     //@ts-ignore
     const panierRedux = useSelector(state => state.panier)
-    console.log(panierRedux)
+    console.log(panierRedux.articles)
+    //@ts-ignore
+    const userRedux = useSelector(state => state.user.userInfo)
+    console.log(userRedux)
     const [totalPrice, setTotalPrice] = useState<number>(0)
 
     const almaTab = [
@@ -50,8 +55,33 @@ export default function Panier() {
       });
       
       setTotalPrice(total); 
+
+      console.log(panierRedux)
       
     }, [panierRedux.articles]);
+
+    const makePayment = async () => {
+
+      const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL_LOCALHOST}/api/payment/create-checkout-session`, {
+          userId: userRedux ? userRedux._id : "Non Authentifé sur le site",
+          products: panierRedux,
+          prixTotal: panierRedux.articles.reduce((somme:number, article:any) => somme + (article.prix * article.quantite), 0) // calcule du prix total
+      });
+
+      
+
+
+      const stripe = await stripePromise;
+      const result = await stripe?.redirectToCheckout({
+          sessionId: response.data.sessionId,
+      });
+
+      if (result?.error) {
+          alert(result.error.message);
+      }
+  };
 
 
 
@@ -61,7 +91,7 @@ export default function Panier() {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center border-b pb-8">
           <h1 className="text-4xl font-semibold max-sm:text-xl">Votre panier</h1>
-          <Link to="/" className="underline max-sm:text-sm">
+          <Link to="/catalogue/lit_coffre" className="underline max-sm:text-sm">
             Continuer les achats
           </Link>
         </div>
@@ -94,16 +124,16 @@ export default function Panier() {
         
         {/* Divider */}
         <div className="h-[1px] w-full bg-black opacity-10" />
-        <div className="flex items-center mt-4 gap-4 uppercase" onClick={handleViderPanier}><p  className="w-full flex justify-end underline"><span className="cursor-pointer">Vider le panier</span></p><FaRegTrashAlt /></div>
+        <div className="flex items-center mt-4 gap-4 uppercase" ><p  className="w-full flex justify-end underline"><span className="cursor-pointer" onClick={handleViderPanier}>Vider le panier</span></p><FaRegTrashAlt /></div>
         <div className="h-40 mt-20">
             <div className="flex flex-col items-end max-md:items-center">
-                <p className="text-lg w-[320px] flex justify-between">Total estimé:<span className="ml-8"> €{totalPrice+".00"} EUR</span></p>
+                <p className="text-lg w-[320px] flex justify-between uppercase">Total estimé:<span className="ml-8 font-bold"> €{totalPrice+".00"} EUR</span></p>
                 <div className="border border-black p-4 w-[320px]">
                     <div className="flex justify-between"><p className="alma_font">Alma</p> <p className="hover:bg-black hover:text-white px-1 rounded cursor-pointer" onMouseEnter={() => setAlmaSelect(almaTab[0])}>2x</p><p onMouseEnter={() => setAlmaSelect(almaTab[1])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">3x</p><p onMouseEnter={() => setAlmaSelect(almaTab[2])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">4x</p><p onMouseEnter={() => setAlmaSelect(almaTab[3])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">10x</p></div>
                     <p>{almaSelect}</p>
                 </div>
                 <p className="text-right text-sm mt-4 w-[320px]">Taxe incluse, <span className="underline hover:decoration-2 cursor-pointer">frais d'expédition</span> et réductions calculés à l'étape du paiement</p>
-                <p className=" bg-black text-white w-[320px] h-[50px] flex justify-center items-center mt-4 cursor-pointer">Procéder au paiement</p>
+                <p onClick={makePayment} className="bg-black text-white w-[320px] h-[50px] flex justify-center items-center mt-4 cursor-pointer">Procéder au paiement</p>
                 <p className=" bg-[#FCBB32] text-white w-[320px] h-[50px] flex justify-center items-center mt-6 cursor-pointer"><img className="w-32" src={paypal_logo} alt="paypal_logo"/> </p> 
             </div>
 

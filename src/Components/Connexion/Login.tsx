@@ -14,8 +14,10 @@ export default function Login({isLogin, setIsLogin}:RegisterProps) {
     const dispatch = useDispatch()
     const [inputEmail, setInputEmail] = useState<string>('')
     const [inputPassword, setInputPassword] = useState<string>('')
+    const [errorMsg, setErrorMsg] = useState<string>("")
 
     const handleSubmit = (e:any) => {
+        setErrorMsg('')
         e.preventDefault()
         const cookies = new Cookies();
 
@@ -34,7 +36,11 @@ export default function Login({isLogin, setIsLogin}:RegisterProps) {
                     window.location.href = "/profil"
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                setErrorMsg(err.response.data.message)
+                console.log(err.response.data.message)
+                
+            })
         }
 
         loginUser();
@@ -64,6 +70,7 @@ export default function Login({isLogin, setIsLogin}:RegisterProps) {
                       <span className='text-white'>Connexion</span>
                       <FaArrowRightToBracket color="red"/>
                 </button>
+                <p className="text-[red] text-center uppercase">{errorMsg}</p>
                 <div className='flex flex-col items-center gap-4'>
                 <p className="text-center">Vous n'êtes pas encore inscrit?</p>
                 <div onClick={() => setIsLogin(!isLogin)} className="cursor-pointer text-indigo-600 font-medium inline-flex space-x-1 items-center"><span className='hover:underline'> Inscription </span></div>

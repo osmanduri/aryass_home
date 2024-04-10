@@ -17,9 +17,10 @@ interface ListeProduitsProps {
     quantite:number;
     img:[string];
     tags:any;
-    dispo:boolean;
+    dispo:string;
     promo:boolean;
-  }
+  },
+  index:number;
 }
 
 // Définition des variantes pour l'animation
@@ -28,12 +29,24 @@ const variants = {
   visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
 };
 
-export default function ListeProduits({element}:ListeProduitsProps) {
+
+const zoomFadeVariants = {
+  visible: (custom:any) => ({
+    scale: 1,
+    opacity: 1,
+    transition: { delay: custom * 0.1, duration: 0.5, ease: "easeOut" }
+  }),
+  hidden: {
+    scale: 0.95,
+    opacity: 0,
+  }
+};
+
+export default function ListeProduits({element, index}:ListeProduitsProps) {
   const [showArticleAjoute, setShowArticleAjoute] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [onHover, setOnHover] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isTag, setIsTag] = useState(false)
   const dispatch = useDispatch()
   //@ts-ignore
   const user = useSelector(state => state.user)
@@ -41,7 +54,6 @@ export default function ListeProduits({element}:ListeProduitsProps) {
   const panier = useSelector(state => state.panier)
 
   const handleAddPanier = async () => {
-    console.log(element)
     const payloadAddBasket = {
         _id:element._id,
         nomProduit:element.nomProduit,
@@ -61,37 +73,50 @@ export default function ListeProduits({element}:ListeProduitsProps) {
     <>
     
     <div className="mt-12 md:w-1/3 sm:w-1/2 xs:w-full p-2 ">
-  {element.dispo ? (
+    <motion.div
+      variants={zoomFadeVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      custom={index} // Assurez-vous de passer l'index si vous l'avez dans les props
+    >
+  {element.dispo === "En stock" ? (
+    <>
     <Link to={`/catalogue/${element.categorie}/${element._id}`} onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)}>
       <div className="shadow-2xl w-full relative">
         <div className="zoom_liste_produit overflow-hidden relative sm:pb-[78.25%] max-xs:w-[100%] max-xs:h-[250px]">
-          <img src={element.img[0]} alt="categorie_meubles" className="absolute top-0 left-0 w-full h-full object-fill"/>
-          {true && <p className='absolute top-2 left-2 py-2 px-8 bg-black text-white text-xs uppercase'>Promo</p>}
+          <img src={element.img[0]} alt="categorie_meubles" className="absolute top-0 left-0 w-full h-full object-cover" style={{objectFit:"cover"}}/>
+          {element.promo === true && <p className='absolute top-2 left-2 py-2 px-8 bg-black text-white text-xs uppercase'>Promo</p>}
         </div>
         <div className="bg-white p-4 shadow-2xl h-[90px]">
-          <p className="text-md cursor-pointer overflow-hidden" style={onHover ? {textDecoration:"underline"}:{}}>{element.nomProduit}</p>
+          <p className="text-md cursor-pointer overflow-hidden max-sm:w-[259px] max-md:text-sm" style={onHover ? {textDecoration:"underline"}:{}}>{element.nomProduit}</p>
           <p className="text-lg font-semibold max-lp:text-sm">{`${element.prix}.00 €`}</p>
         </div>
       </div>
     </Link>
+    {element.tags.length > 0 ? (
+    <p onClick={() => setIsDialogOpen(true)} className="cursor-pointer shadow-none text-center p-4 border border-black w-full mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out max-sm:text-sm">Choisir des options</p>
   ) : (
+    <p onClick={handleAddPanier} className="cursor-pointer shadow-none text-center p-4 border border-black w-full mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out max-sm:text-sm">Ajouter au panier</p>
+  )}
+    </>
+  ) 
+  : 
+  (
     <div onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)} className="shadow w-full relative cursor-normal">
       <div className="zoom_liste_produit overflow-hidden relative sm:pb-[78.25%] max-xs:w-[100%] max-xs:h-[250px]">
         <img src={element.img[0]} alt="categorie_meubles" className="absolute top-0 left-0 w-full h-full object-fill brightness-75"/>
         <p className='absolute bottom-2 left-2 py-2 px-8 bg-[red] text-white text-xs uppercase'>Épuisé</p>
       </div>
       <div className="bg-white p-4 shadow-2xl h-[90px]">
-        <p className="text-md overflow-hidden">{element.nomProduit}</p>
+        <p className="text-md overflow-hidden max-sm:w-[259px]">{element.nomProduit}</p>
         <p className="text-lg font-semibold max-lp:text-sm">{`${element.prix}.00 €`}</p>
       </div>
+      <p className="shadow-none text-center p-4 border border-black w-full mx-auto bg-black text-white max-sm:text-sm">Epuisé</p>
     </div>
   )}
+</motion.div>
 
-  {element.tags.length > 0 ? (
-    <p onClick={() => setIsDialogOpen(true)} className="cursor-pointer shadow-none text-center p-4 border border-black w-full mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out max-sm:text-sm">Choisir des options</p>
-  ) : (
-    <p onClick={handleAddPanier} className="cursor-pointer shadow-none text-center p-4 border border-black w-full mx-auto bg-black text-white hover:bg-white hover:text-black transition duration-300 ease-in-out max-sm:text-sm">Ajouter au panier</p>
-  )}
 </div>
 
     
@@ -106,7 +131,7 @@ export default function ListeProduits({element}:ListeProduitsProps) {
         style={{ backdropFilter: 'blur(3px)' }} // Optionnel: flou de l'arrière-plan
       >
           <div ref={modalRef}>
-            <ArticleAjoute element={element} setShowArticleAjoute={setShowArticleAjoute}/>
+            <ArticleAjoute element={element} setShowArticleAjoute={setShowArticleAjoute} select={[]}/>
           </div>
         </motion.div>
       )}

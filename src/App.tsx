@@ -15,7 +15,9 @@ import CheckConnected from './Components/PrivateRoute/CheckConnected';
 import Cookies from 'universal-cookie';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import {store, persistor } from './redux/store'; // Assurez-vous d'avoir exporté persistor depuis votre fichier store
+import {store, persistor } from './redux/store'; // Assurez-vous d'avoir exporté persistor depuis votre fichier store$
+import Success from './Pages/StripePage/Success'
+import Cancel from './Pages/StripePage/Cancel';
 
 function App() {
   const isAuthenticated = () => {
@@ -39,6 +41,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/not_found" element={<NotFound />} />
             <Route path="/panier" element={<Panier />} />
+            <Route path="/payment_success" element={<Success/>} />
+            <Route path="/payment_cancel" element={<Cancel />} />
             {/* Utilisez votre propre logique d'authentification pour conditionner l'accès à la route /profil */}
             <Route element={<CheckConnected/>}>
               <Route path="/profil" element={<UserProfil/>}/>

@@ -9,10 +9,11 @@ interface ArticleAjouteProps {
         img:[string];
     }
     setShowArticleAjoute:any;
+    select:any;
 
 }
 
-export default function ArticleAjoute({element, setShowArticleAjoute}:ArticleAjouteProps) {
+export default function ArticleAjoute({element, setShowArticleAjoute, select}:ArticleAjouteProps) {
     //@ts-ignore
     const panier = useSelector(state => state.panier.articles)
 
@@ -20,13 +21,18 @@ export default function ArticleAjoute({element, setShowArticleAjoute}:ArticleAjo
   return (
     <div className='bg-white border border-black border-2 text-white p-4 shadow-2xl w-[450px] max-sm:w-[300px]'>
         <h1 className="text-black text-center uppercase text-lg">Article ajouté avec succès !</h1>
-        <div className="flex justify-between mt-4 max-sm:gap-4">
+        <div className="flex justify-between mt-4 max-sm:gap-4 gap-4">
             <img src={element.img[0]} alt="img_product" className="w-[150px] h-[150px] max-sm:w-[80px] max-sm:h-[80px]"/>
             <div>
                 <p className="text-md font-semibold max-sm:text-sm max-sm:font-normal">{element.nomProduit}</p>
-                <p className="text-sm mt-1 max-sm:text-xs">Taille:140x190</p>
-                <p className="text-sm max-sm:text-xs">Sommier:Sans sommier</p>
-                <p className="text-sm max-sm:text-xs">Matelat:sans matelat</p>
+                {
+                    select.map((e:any, index:number) => {
+                        return (
+                            <p key={index} className="text-sm font-semibold max-sm:text-sm max-sm:font-normal"><span className="font-bold underline">{e.type}</span> : <span>{e.valeur}</span></p>
+                        )
+                    })
+                }
+
             </div>
         </div>
         <div className="mt-8">
