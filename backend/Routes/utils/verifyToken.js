@@ -3,7 +3,7 @@ const userModel = require('../../Model/userModel')
 const ObjectID = require('mongoose').Types.ObjectId
 
 module.exports.verifyToken = async(req, res, next) => {
-
+    
     const tokenHeader = req.headers.token;
 
     if (tokenHeader) {
@@ -13,6 +13,7 @@ module.exports.verifyToken = async(req, res, next) => {
             if (err) {
                 return res.send('Token is not valid !')
             }
+            console.log(user)
 
             req.user = user;
             next();
@@ -26,7 +27,7 @@ module.exports.verifyUser = (req, res, next) => {
     console.log(req.user)
     this.verifyToken(req, res, () => {
 
-        if (req.user.id === req.params.id 
+        if (req.user.id === req.params.user_id 
             || 
             req.user.isAdmin 
             ||

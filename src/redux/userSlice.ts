@@ -5,15 +5,15 @@ interface User {
   nom: string;
   prenom: string;
   email: string;
-  //adresse?: string;
-  //ville?: string;
-  //pays?: string;
-  //aPropos?: string;
+  adresse?: string;
+  ville?: string;
+  pays?: string;
+  codePostal?:string;
+  gender?:string;
+  dateNaissance?:string;
   password: string;
   isAdmin: boolean;
   date_creation_user?: string;
-  panier: Array<any>;
-  commande: Array<any>;
   profil_img?: string;
 }
 
@@ -41,7 +41,7 @@ export const userSlice = createSlice({
       state.status.pending = true;
     },
     updateSuccess: (state, action: PayloadAction<User>) => {
-        console.log(action.payload)
+      console.log(action.payload)
       state.status.pending = false;
       state.userInfo = action.payload;
       state.status.error = false;

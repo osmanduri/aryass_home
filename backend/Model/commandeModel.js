@@ -19,7 +19,7 @@ const commandeSchema = new mongoose.Schema({
         type:[String]
     },
     prixTotal:{
-        type:String
+        type:Number
     },
     email: {
         type: String
@@ -69,7 +69,7 @@ const commandeSchema = new mongoose.Schema({
     },
     date_creation_commande: {
         type: String,
-        default: moment().format('LLL')
+        default: moment().format('LL') //default: moment().format('LLL')
     },
     }, {
         timestamps: true

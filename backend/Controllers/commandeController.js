@@ -31,3 +31,27 @@ module.exports.new = async (req, res) => {
     }
 
 }
+
+module.exports.getCommandByUser = async (req, res) => {
+    const { payeOuNonPaye } = req.body;  // Récupération des statuts de paiement à filtrer
+    console.log("Statuts de paiement à filtrer:", payeOuNonPaye);
+
+    try {
+        let query = { user_id: req.params.user_id };
+        // Assurez-vous que payeOuNonPaye est non vide avant d'ajouter au query
+        if (payeOuNonPaye && payeOuNonPaye.length > 0) {
+            query.status_paiement = { $in: payeOuNonPaye };
+        }
+        
+        const commandes = await commandeModel.find(query).sort({ createdAt: -1 });
+
+        if (commandes.length > 0) {
+            return res.status(200).send(commandes);
+        } else {
+            return res.status(404).json({ message: "Aucune commande trouvée." });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send(err);
+    }
+};

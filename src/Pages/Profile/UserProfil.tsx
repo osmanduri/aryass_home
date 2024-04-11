@@ -1,9 +1,24 @@
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux"
 import Cookies from "universal-cookie";
 import { disconnectUser } from "../../redux/userSlice";
+import MenuElement from "./components/MenuElement";
+import { menu } from '../../data/menu_profile'
+import ProfilHome from "./pages/ProfilHome";
+import Commandes from "./pages/Commandes";
+import Compte from "./pages/Compte";
+
+interface MenuItems {
+  titre:string;
+  icon:string;
+  url:string;
+
+}
+
 export default function Bienvenue() {
+  const [choiceMenu, setChoiceMenu] = useState<string>('Bienvenue')
   //@ts-ignore
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.user.userInfo)
   const dispatch = useDispatch()
 
   function handleDisconnect(){
@@ -13,15 +28,56 @@ export default function Bienvenue() {
     dispatch(disconnectUser())
 
     // Naviguer vers la page "/login"
-    setTimeout(() => {
+    //setTimeout(() => {
       window.location.href = '/'
-    }, 500)
+    //}, 100)
     
   }
-  return (
-    <div className="text-center text-4xl">Bienvenue {user.userInfo.prenom} {user.userInfo.nom}
+
+  const handleMenu = (choix:MenuItems) => {
     
-    <p className="cursor-pointer hover:underline" onClick={handleDisconnect}>Effectuer une deconnexion</p>
+    switch(choix.titre){
+      case 'Bienvenue':{
+        setChoiceMenu('Bienvenue')
+        break;
+      }
+      case 'Commandes':{
+        setChoiceMenu('Commandes')
+        break;
+      }
+      case 'Compte':{
+        setChoiceMenu('Compte')
+        break;
+      }
+      case 'Deconnexion':{
+        handleDisconnect();
+        break;
+      }
+    }
+  }
+  return (
+    <>
+    <div className="text-center text-4xl">Bonjour {user.prenom} !</div>
+    
+    
+    <div className="flex items-center justify-center gap-12 mt-16 max-sm:gap-4">
+    {
+      menu.map((element, index) => {
+        return (
+          <div onClick={() => handleMenu(element)}><MenuElement element={element} key={index} choiceMenu={choiceMenu}/></div>
+        )
+      })
+    }
     </div>
+    <div className="h-[1px] w-full bg-black opacity-10"/>
+    <div className="max-w-7xl mx-auto">
+      { choiceMenu === 'Bienvenue' && <ProfilHome/> }                     
+      { choiceMenu === 'Commandes' && <Commandes/> }
+      { choiceMenu === 'Compte' && <Compte/> }
+    </div>
+
+    
+
+</>
   )
 }

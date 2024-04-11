@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Définition explicite des types pour l'état initial
 interface FilterState {
     dispo: string[]; // dispo est toujours un tableau de strings
+    payeOuNonPaye:string[];
     priceMax: number | null;
     priceMin: number | null;
     sortBy: string;
@@ -16,6 +17,7 @@ interface FilterState {
 // État initial avec les types spécifiés
 const initialState: FilterState = {
     dispo: [], // Initialise dispo comme un tableau vide au lieu de null
+    payeOuNonPaye:[],
     priceMax: null,
     priceMin: null,
     sortBy: '',
@@ -36,6 +38,9 @@ const filterSlice = createSlice({
         },
         setDispo: (state, action: PayloadAction<string[]>) => {
             state.dispo = action.payload;
+        },
+        setPayeOuNonPaye:(state, action: PayloadAction<string[]>) => {
+            state.payeOuNonPaye = action.payload;
         },
         setPriceMin: (state, action: PayloadAction<number | null>) => {
             state.priceMin = action.payload;
@@ -68,5 +73,5 @@ const filterSlice = createSlice({
     },
 });
 
-export const { updateStart, setDispo, setPriceMin, setPriceMax, setSortBy, updateDetailsProduct, updateError, resetState } = filterSlice.actions;
+export const { updateStart, setDispo, setPayeOuNonPaye, setPriceMin, setPriceMax, setSortBy, updateDetailsProduct, updateError, resetState } = filterSlice.actions;
 export default filterSlice.reducer;

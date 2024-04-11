@@ -36,7 +36,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
             let cartId = customer.metadata.cart;
             // Enlever les guillemets supplémentaires si présents
             cartId = cartId.replace(/"/g, '');
-            console.log(data)
+            
             // Ensuite, utilisez l'ID nettoyé pour récupérer la commande
             const updatedOrder = await commandeModel.findByIdAndUpdate(
                 cartId,
@@ -51,7 +51,6 @@ router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
                     codePostal: data.customer_details.address.postal_code,
                     telephone: data.customer_details.phone,
                     status_paiement: data.payment_status,
-                    session_id:data.id,
                     monnaie:data.currency,
                     customer: data.customer,
                     payment_intent:data.payment_intent,
@@ -65,9 +64,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
               }
 
               console.log("Order updated successfully", updatedOrder);
-
-              
-
+            
+            console.log(data)
             console.log("my_customer !",customer)
             console.log("my_data_customer_details", data.customer_details, data.payment_status)
         })
@@ -82,15 +80,12 @@ router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
 router.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
     try {
 
-        
-
-        const newCommande = new commandeModel({
-            user_id:req.body.userId,
-            panier:req.body.products.articles,
-            prixTotal:req.body.prixTotal,
+        const customer = await stripe.customers.create({
+            metadata:{
+                userId:req.body.userId,
+            },
+            
         })
-
-        const cmd = await newCommande.save()
 
         const lineItems = req.body.products.articles.map((product) => {
             // Convertir le tableau des tags en une chaîne de caractères
@@ -110,13 +105,6 @@ router.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
             };
         });
 
-        const customer = await stripe.customers.create({
-            metadata:{
-                userId:req.body.userId,
-                cart: JSON.stringify(cmd._id),
-            },
-            
-        })
         //console.log("customer_created", customer)
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
@@ -134,6 +122,22 @@ router.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
                 enabled: true,
               },
         });
+
+        const newCommande = new commandeModel({
+            user_id:req.body.userId,
+            panier:req.body.products.articles,
+            prixTotal:req.body.prixTotal,
+            session_id:session.id
+        })
+
+        const cmd = await newCommande.save()
+
+        await stripe.customers.update(customer.id, { // il faut mettre à jour le client avec le cmd._id pour le récuprer dans le webhook et mettre à jour les infos de la commande du client
+            metadata: {
+              userId: req.body.userId,
+              cart: JSON.stringify(cmd._id),
+            },
+          });
 
         res.send({ sessionId: session.id });
     } catch (error) {

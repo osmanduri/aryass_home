@@ -6,47 +6,57 @@ const userSchema = new mongoose.Schema({
 
     nom: {
         type: String,
-        minLength: 2,
-        maxLength: 55,
+        default:"",
         trimp: true,
     },
     prenom: {
         type: String,
-        minLength: 2,
-        maxLength: 55,
+        default:"",
         trimp: true,
     },
     email: {
         type: String,
-        required: true,
         trim: true,
     },
     entreprise:{
         type:String,
-        trim:true
+        trim:true,
+        default:""
     },
     adresse:{
         type:String,
-        trim:true
+        trim:true,
+        default:""
     },
     ville:{
         type:String,
-        trim:true
+        trim:true,
+        default:""
     },
     pays:{
         type:String,
-        trim:true
+        trim:true,
+        default:""
     },
     codePostal:{
         type:String,
-        trim:true
+        trim:true,
+        default:""
     },
     telephone:{
         type:String,
-        trim:true
+        trim:true,
+        default:""
     },
-    aPropos:{
+    dateNaissance:{
         type:String,
+        trim:true,
+        default:""
+    },
+    civilite:{
+        type:String,
+        trim:true,
+        default:""
     },
     password: {
         type: String,
