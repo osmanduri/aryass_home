@@ -6,20 +6,26 @@ module.exports.getAllCommand = async (req, res) => {
 }
 
 module.exports.new = async (req, res) => {
+    console.log(req.body)
 
     try{
         const newCommande = new commandeModel({
             user_id:req.body.user_id,
+            nomComplet:req.body.nomComplet,
+            email:req.body.email,
             panier:req.body.panier,
             payment_method:req.body.payment_method,
             prixTotal:req.body.prixTotal,
-            email:req.body.email,
             entreprise:req.body.entreprise,
             adresse: req.body.adresse,
             ville: req.body.ville,
             pays: req.body.pays,
             codePostal:req.body.codePostal,
-            telephone:req.body.telephone
+            telephone:req.body.telephone,
+            monnaie:req.body.monnaire,
+            status:req.body.status,
+            procedure_paiement:req.body.procedure_paiement,
+            status_paiement:req.body.status_paiement
     
         })
     
@@ -38,11 +44,22 @@ module.exports.getCommandByUser = async (req, res) => {
 
     try {
         let query = { user_id: req.params.user_id };
-        // Assurez-vous que payeOuNonPaye est non vide avant d'ajouter au query
-        if (payeOuNonPaye && payeOuNonPaye.length > 0) {
-            query.status_paiement = { $in: payeOuNonPaye };
-        }
         
+        // Construire une condition qui exclut les commandes PayPal non payées
+        let paymentConditions = [];
+        if (payeOuNonPaye && payeOuNonPaye.length > 0) {
+            paymentConditions.push({ status_paiement: { $in: payeOuNonPaye } });
+        }
+        // Ajouter la condition pour exclure les commandes PayPal non payées
+        paymentConditions.push({
+            $or: [
+                { procedure_paiement: { $ne: 'paypal' } },
+                { procedure_paiement: 'paypal', status_paiement: { $ne: 'unpaid' } }
+            ]
+        });
+
+        query.$and = paymentConditions;
+
         const commandes = await commandeModel.find(query).sort({ createdAt: -1 });
 
         if (commandes.length > 0) {

@@ -19,6 +19,7 @@ interface ListeProduitsProps {
     tags:any;
     dispo:string;
     promo:boolean;
+    object_fit:string;
   },
   index:number;
 }
@@ -69,6 +70,7 @@ export default function ListeProduits({element, index}:ListeProduitsProps) {
   }
 
     useOutsideClick(modalRef, () => setShowArticleAjoute(false))
+    console.log(element)
   return (
     <>
     
@@ -84,12 +86,12 @@ export default function ListeProduits({element, index}:ListeProduitsProps) {
     <>
     <Link to={`/catalogue/${element.categorie}/${element._id}`} onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)}>
       <div className="shadow-2xl w-full relative">
-        <div className="zoom_liste_produit overflow-hidden relative sm:pb-[78.25%] max-xs:w-[100%] max-xs:h-[250px]">
-          <img src={element.img[0]} alt="categorie_meubles" className="absolute top-0 left-0 w-full h-full object-cover" style={{objectFit:"cover"}}/>
+        <div className="zoom_liste_produit overflow-hidden relative sm:pb-[65.25%] max-xs:w-[100%] max-xs:h-[250px]">
+          <img src={element.img[0]} alt="categorie_meubles" className="absolute top-0 left-0 w-full h-full object-cover" style={element.object_fit ? { objectFit: element.object_fit as React.CSSProperties['objectFit'] } : { objectFit: "cover" }}/>
           {element.promo === true && <p className='absolute top-2 left-2 py-2 px-8 bg-black text-white text-xs uppercase'>Promo</p>}
         </div>
-        <div className="bg-white p-4 shadow-2xl h-[90px]">
-          <p className="text-md cursor-pointer overflow-hidden max-sm:w-[259px] max-md:text-sm" style={onHover ? {textDecoration:"underline"}:{}}>{element.nomProduit}</p>
+        <div className="bg-white p-4 shadow-2xl h-[90px]" style={{ borderTop: "1px solid rgba(0, 0, 0, 0.3)" }}>
+          <p className="text-md cursor-pointer overflow-hidden max-sm:w-[259px] max-lg:text-sm" style={onHover ? {textDecoration:"underline"}:{}}>{element.nomProduit}</p>
           <p className="text-lg font-semibold max-lp:text-sm">{`${element.prix}.00 €`}</p>
         </div>
       </div>

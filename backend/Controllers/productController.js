@@ -122,7 +122,7 @@ module.exports.addProduct = async (req, res) => {
 }
 
 module.exports.getAllProductWithTag = async (recherche) => { // Recherche pas nom
-
+  console.log('this one ?')
   
   let query = [
     { 
@@ -172,7 +172,8 @@ module.exports.getAllProductWithTag = async (recherche) => { // Recherche pas no
 }
 
 module.exports.getWithTag = async (choix_categorie, dispo, priceMin, priceMax, sortBy) => {
-  console.log(choix_categorie, sortBy)
+  console.log('this one ?')
+
   let matchCondition = { 
     'categorie': choix_categorie
   };
@@ -194,8 +195,6 @@ module.exports.getWithTag = async (choix_categorie, dispo, priceMin, priceMax, s
   
   // Affecter la condition de tri basée sur le choix de l'utilisateur
   sortCondition = sortOptions[userSortChoice] || sortCondition; 
-
-  console.log(sortCondition)
   
   // Vérifier si le tableau dispo contient des éléments
   if (dispo.length > 0) {
@@ -240,7 +239,8 @@ module.exports.getWithTag = async (choix_categorie, dispo, priceMin, priceMax, s
           'description': { '$first': '$description' },
           'tags': { '$push': '$tag_details' },
           'dispo': { '$first': '$dispo' },
-          'promo': { '$first': '$promo' }
+          'promo': { '$first': '$promo' },
+          'object_fit': { '$first': '$object_fit'}
         }
       },
       {

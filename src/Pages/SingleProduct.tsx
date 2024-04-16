@@ -176,13 +176,13 @@ export default function ProductDetails() {
                 <div className="grid grid-cols-2 gap-4 max-sm:flex max-sm:flex-col">
                     {/* Left column for images */}
                     <div className="flex flex-col w-[95%]">
-                        <img src={singleProduct.img[0]} alt="Produit principal" className="mb-4 cursor-pointer w-full h-[500px]" onClick={() => openImageModal(singleProduct.img[0])} />
+                        <img src={singleProduct.img[0]} alt="Produit principal" className="mb-4 cursor-pointer w-full h-[400px] max-sm:h-[200px]" onClick={() => openImageModal(singleProduct.img[0])} />
                         <div className="flex -mx-2 flex-wrap">
                             {
                                 singleProduct.img.map((element, index) => {
                                     if(index === 0) return null
                                     return (
-                                        <img key={index} src={element} alt="Vue détaillée du produit" className="w-1/5 h-[120px] m-2 cursor-pointer" onClick={() => openImageModal(element)} /> 
+                                        <img key={index} src={element} alt="Vue détaillée du produit" className="w-1/5 h-[120px] m-2 cursor-pointer max-sm:h-[60px]" onClick={() => openImageModal(element)} /> 
                                     )
                                 })
                             }

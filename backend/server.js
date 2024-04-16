@@ -8,6 +8,7 @@ const product_router = require('./Routes/productRoute')
 const commande_router = require('./Routes/commandeRoute')
 const tag_router = require('./Routes/tagRoute')
 const stripe_router = require('./Routes/stripeRoute')
+const facture_router = require('./Routes/facture_Route')
 var app = express()
 const bodyParser = require('body-parser');
 
@@ -33,6 +34,7 @@ app.use('/api/users', bodyParser.json(), user_router)
 app.use('/api/product',bodyParser.json(),  product_router)
 app.use('/api/commande',bodyParser.json(),  commande_router)
 app.use('/api/tag', bodyParser.json(), tag_router)
+app.use('/api/facture', bodyParser.json(), facture_router)
 
 
 

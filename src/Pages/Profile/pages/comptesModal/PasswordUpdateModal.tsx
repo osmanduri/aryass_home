@@ -25,7 +25,7 @@ export default function PasswordUpdateModal() {
             newPassword:newPassword
         }
 
-        const updateEmail = async () => {
+        const updatePassword = async () => {
             await axios.put(`http://localhost:5005/api/users/updatePassword/${user._id}`, payload ,{
                 headers:{
                     'token': `Bearer ${cookies.get('token')}`
@@ -56,7 +56,7 @@ export default function PasswordUpdateModal() {
                 })
                 setLoading(false)
             }else{
-                updateEmail();
+                updatePassword();
                 setLoading(false)
             }
 
@@ -75,20 +75,20 @@ export default function PasswordUpdateModal() {
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Votre ancien mot de passe ici
                     </label>
-                    <input onChange={(e) => setOldPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="Ancien Mot de passe" />
+                    <input onChange={(e) => setOldPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="Ancien Mot de passe" required/>
                 </div>
         
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Votre nouveau mot de passe
                     </label>
-                    <input onChange={(e) => setNewPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="Nouveau Mot de passe" />
+                    <input onChange={(e) => setNewPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="Nouveau Mot de passe" required/>
                 </div>
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                     Répétez votre nouveau mot de passe
                     </label>
-                    <input onChange={(e) => setNewPasswordAgain(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="Répétez votre mot de passe" />
+                    <input onChange={(e) => setNewPasswordAgain(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="Répétez votre mot de passe" required/>
                 </div>
                 { loading ? <div className='flex justify-center'> <img className="w-12" src="/loading/loading.gif" alt="loading"/> </div> : <p style={{color:msgApi.color}} className='text-center'>{msgApi.msg}</p> }
                 <div className="flex items-center justify-between">

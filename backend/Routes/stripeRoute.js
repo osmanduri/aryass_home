@@ -54,7 +54,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
                     monnaie:data.currency,
                     customer: data.customer,
                     payment_intent:data.payment_intent,
-                    status:data.status
+                    status:data.status,
+                    procedure_paiement:"stripe"
                   }
                 },
                 { new: true }
@@ -127,7 +128,8 @@ router.post('/create-checkout-session', bodyParser.json(), async (req, res) => {
             user_id:req.body.userId,
             panier:req.body.products.articles,
             prixTotal:req.body.prixTotal,
-            session_id:session.id
+            session_id:session.id,
+            procedure_paiement:"stripe"
         })
 
         const cmd = await newCommande.save()

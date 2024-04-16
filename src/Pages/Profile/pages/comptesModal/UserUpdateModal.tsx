@@ -26,6 +26,7 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
     const [codePostal, setCodePostal] = useState<string>('')
     const [civilite, setCivilite] = useState<string>('')
     const [telephone, setTelephone] = useState<string>('')
+    const [loading, setLoading] = useState<boolean>(false)
     const [msgApi, setMsgApi] = useState({
         msg:"",
         color:""
@@ -73,6 +74,7 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
+        setLoading(true)
         setMsgApi({
             msg:"",
             color:""
@@ -96,6 +98,7 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
             })
             .then((res: any) => {
                 console.log(res.data);
+                setLoading(false)
                 dispatch(updateSuccess(res.data.user));
                 setMsgApi({
                     msg:"Utilisateur mis à jour",
@@ -103,6 +106,7 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
                 })
             })
             .catch((err: any) => {
+                setLoading(false)
                 console.log(err);
                 setMsgApi({
                     msg:"Erreur mise à jour",
@@ -113,10 +117,12 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
     
         if (Object.keys(payload).length > 0) {
             setTimeout(() => {
+                setLoading(false)
                 updateUser();
             }, 500)
             
         } else {
+            setLoading(false)
             console.log("Aucune donnée à mettre à jour.");
         }
     }
@@ -160,7 +166,7 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
               </div> 
 
           </div>
-          <p className="text-center" style={{color:msgApi.color}}>{msgApi.msg}</p>
+          { loading ? <div className="w-full flex justify-center"><img className="w-8" src="/loading/loading.gif" alt="loading"/></div> : <p className="text-center" style={{color:msgApi.color}}>{msgApi.msg}</p> }
           <div className="flex justify-between items-center max-sm:mt-4 max-sm:gap-8 mt-2">
                 <div onClick={() => setShowUpdateUserModal(false)} className="max-sm:w-1/2 max-sm:h-8 flex justify-center items-center w-32 h-8 bg-[black] text-white rounded cursor-pointer">
                     <p className="max-sm:text-sm text-white">Annuler</p>

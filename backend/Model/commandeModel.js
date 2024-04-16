@@ -67,6 +67,9 @@ const commandeSchema = new mongoose.Schema({
     status:{
         type:String
     },
+    procedure_paiement:{
+        type:String
+    },
     date_creation_commande: {
         type: String,
         default: moment().format('LL') //default: moment().format('LLL')

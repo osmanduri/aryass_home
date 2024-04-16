@@ -64,7 +64,7 @@ export default function Bienvenue() {
     {
       menu.map((element, index) => {
         return (
-          <div onClick={() => handleMenu(element)}><MenuElement element={element} key={index} choiceMenu={choiceMenu}/></div>
+          <div key={index} onClick={() => handleMenu(element)}><MenuElement key={index} element={element}  choiceMenu={choiceMenu}/></div>
         )
       })
     }

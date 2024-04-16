@@ -108,7 +108,7 @@ export default function Navbar() {
                         showLogoInsteadOfMenu ? <Logo/> : <MenuNormal/>
                     }
 
-                    <div className="flex gap-8 w-[256px] justify-end max-sm:gap-4">
+                    <div className="flex items-center gap-6 w-[256px] justify-end max-sm:gap-4">
                         <div className="cursor-pointer" onClick={() => setIsSearch(!isSearch)}>
                             <IoIosSearch size={sizeLogoNavbar ? 20 : 25}/>
                             

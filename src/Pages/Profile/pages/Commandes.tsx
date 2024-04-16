@@ -56,7 +56,7 @@ export default function Commandes() {
     <div className='max-w-[900px] mx-auto'>
         <h1 className='text-2xl uppercase text-center mt-12 underline max-sm:text-lg'>Historique des commandes</h1>
         <div className='flex justify-between m-2'>
-        {    commandeUser.length > 0 && <><p className='max-sm:text-sm'>Filtre :</p>
+        <p className='max-sm:text-sm'>Filtre :</p>
         <div className='flex items-center gap-2'>
             <div className="flex items-center justify-start">
                         <input type="checkbox" id="checkbox-stock" className="cursor-pointer"
@@ -70,13 +70,13 @@ export default function Commandes() {
                             checked={selectedOptions.includes('unpaid')} />
                         <label htmlFor="checkbox-out-of-stock" className="ml-2 max-sm:text-sm">Non Payé</label>
             </div>
-        </div></>
-        }
+        </div>
+        
 
         </div>
 
         {
-           commandeUser.length > 0 ? commandeUser.map((element, index) => {
+           commandeUser.length > 0 ? commandeUser.map((element:any, index:number) => {
                 return (
                     <SingleCommande element={element} key={index}/>
                 )

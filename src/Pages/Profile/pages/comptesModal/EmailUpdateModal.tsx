@@ -68,14 +68,14 @@ export default function EmailUpdateModal() {
             <label className="block text-gray-700 text-sm font-bold mb-2">
                 Votre nouvelle adresse e-mail
             </label>
-            <input onChange={(e) => setNewEmail(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="email" placeholder="Email" />
+            <input onChange={(e) => setNewEmail(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="email" placeholder="Email" required />
         </div>
 
         <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2">
                 Votre mot de passe actuel
             </label>
-            <input onChange={(e) => setPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="*************" />
+            <input onChange={(e) => setPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" placeholder="*************" required/>
         </div>
         { loading ? <div className='flex justify-center'> <img className="w-12" src="/loading/loading.gif" alt="loading"/> </div> : <p style={{color:msgApi.color}} className='text-center'>{msgApi.msg}</p> }
         <div className="flex items-center justify-between">

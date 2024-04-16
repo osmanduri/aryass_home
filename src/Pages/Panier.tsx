@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SinglePanier from '../Components/SinglePanier';
-import paypal_logo from '/paypal/paypal.png'
 import { useDispatch, useSelector } from "react-redux";
 import { viderPanierRedux } from "../redux/panierSlice";
 import { FaRegTrashAlt } from "react-icons/fa";
 import {loadStripe} from '@stripe/stripe-js';
 import axios from "axios";
+import FormulaireLivraison from "../Components/Paypal/FormulaireLivraison";
+import useOutsideClick from "./Catalogues/ClickOutside/useOutsideClick";
+import { motion } from 'framer-motion';
+import { useRef } from "react";
+import paypal_logo from '/paypal/paypal.png'
 
 interface PanierItem {
   id: string;
@@ -17,6 +21,11 @@ interface PanierItem {
   img: string[];
 }
 
+const backdrop = {
+  visible: { opacity: 1 },
+  hidden: { opacity: 0 },
+};
+
 export default function Panier() {
     const dispatch = useDispatch()
     //@ts-ignore
@@ -26,6 +35,9 @@ export default function Panier() {
     const userRedux = useSelector(state => state.user.userInfo)
     console.log(userRedux)
     const [totalPrice, setTotalPrice] = useState<number>(0)
+
+    const [showFormulaireLivraisonPaypal, setShowFormulaireLivraisonPaypal] = useState<boolean>(false);
+    const modalFormulairePaypal = useRef<HTMLDivElement | null>(null);
 
     const almaTab = [
         "2 x 769,50 € (sans frais)",
@@ -85,8 +97,9 @@ export default function Panier() {
 
 
 
-
+  useOutsideClick(modalFormulairePaypal, () => setShowFormulaireLivraisonPaypal(false))
   return (
+    <>
     <div className="bg-white-100 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center border-b pb-8">
@@ -134,7 +147,11 @@ export default function Panier() {
                 </div>
                 <p className="text-right text-sm mt-4 w-[320px]">Taxe incluse, <span className="underline hover:decoration-2 cursor-pointer">frais d'expédition</span> et réductions calculés à l'étape du paiement</p>
                 <p onClick={makePayment} className="bg-black text-white w-[320px] h-[50px] flex justify-center items-center mt-4 cursor-pointer">Procéder au paiement</p>
-                <p className=" bg-[#FCBB32] text-white w-[320px] h-[50px] flex justify-center items-center mt-6 cursor-pointer"><img className="w-32" src={paypal_logo} alt="paypal_logo"/> </p> 
+    
+                {/*<PaypalButton totalPrice={totalPrice}/>*/}
+
+                <p onClick={() => setShowFormulaireLivraisonPaypal(true)} className=" bg-[#FCBB32] text-white w-[320px] h-[50px] flex justify-center items-center mt-6 cursor-pointer"><img className="w-32" src={paypal_logo} alt="paypal_logo"/> </p>
+
             </div>
 
         </div>
@@ -142,5 +159,20 @@ export default function Panier() {
 
       </div>
     </div>
+
+    {showFormulaireLivraisonPaypal && panierRedux.articles.length > 0 && (
+        <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={backdrop}
+        className="fixed inset-0 z-50 flex justify-center items-center"
+        style={{ backdropFilter: 'blur(3px)', backgroundColor: 'rgba(0,0,0,0.5)' }} // Optionnel: flou de l'arrière-plan
+      >
+          <div ref={modalFormulairePaypal}>
+            <FormulaireLivraison totalPrice={totalPrice} setShowFormulaireLivraisonPaypal={setShowFormulaireLivraisonPaypal}/>
+          </div>
+        </motion.div>
+      )}
+    </>
   );
 }
