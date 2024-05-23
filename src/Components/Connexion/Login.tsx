@@ -27,7 +27,7 @@ export default function Login({isLogin, setIsLogin}:RegisterProps) {
                 password:inputPassword
             }
 
-            axios.post('http://localhost:5005/api/users/login', payload)
+            axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/login`, payload)
             .then((res) => {
                 if(res.data){
                     console.log(res.data)

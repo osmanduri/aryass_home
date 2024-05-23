@@ -16,6 +16,7 @@ export default function Catalogue() {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    
     const payloadFilter = {
       dispo:filter.dispo,
       priceMin:filter.priceMin,
@@ -26,7 +27,7 @@ export default function Catalogue() {
     
     window.scrollTo(0, 0);
     const fetchProduct = async () => {
-      await axios.post(`http://localhost:5005/api/product/getAllProductByCategorie/${params.choix_categorie}`, payloadFilter)
+      await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/product/getAllProductByCategorie/${params.choix_categorie}`, payloadFilter)
       .then((res) => {
         setProductTab(res.data)
         console.log(res.data)
@@ -34,7 +35,7 @@ export default function Catalogue() {
       })
       .catch(err => console.log(err))
 
-      await axios.get(`http://localhost:5005/api/product/getProductDetails/${params.choix_categorie}`)
+      await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/product/getProductDetails/${params.choix_categorie}`)
       .then((res:any) => {
         dispatch(updateDetailsProduct(res.data))
       })
@@ -54,7 +55,7 @@ export default function Catalogue() {
         {
           productTab.map((element, index) => {
             return (
-              <ListeProduits element={element} index={index}/>
+              <ListeProduits key={index} element={element} index={index}/>
             )
           })
         }

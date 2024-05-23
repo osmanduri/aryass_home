@@ -9,11 +9,11 @@ const Cta3 = () => {
                         <p className="text-3xl xl:text-4xl font-semibold leading-9 text-gray-800">Rénovez votre maison</p>
                     </div>
                     <div className="mt-4 lg:w-4/5 xl:w-3/5">
-                        <p className="text-base leading-6 text-gray-600">Depuis longtemps, il est reconnu que la mise en page d'une page peut distraire un lecteur en raison de son contenu lisible.</p>
+                        <p className="text-base leading-6 text-gray-600">Transformez votre salon en un havre de paix et d'élégance avec notre collection de meubles raffinés et de décorations contemporaines</p>
                     </div>
                     <div className="mt-16 w-full">
                         <button className="px-4 bg-gray-900 flex justify-between items-center w-full lg:w-72 h-14 text-white hover:bg-gray-700">
-                            <p className="text-xl font-medium leading-5 text-white">Voir plus</p>
+                            <a href="/catalogue/canape" className="text-xl font-medium leading-5 text-white">Voir plus</a>
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M6.66663 16H25.3333" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 <path d="M20 21.3333L25.3333 16" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

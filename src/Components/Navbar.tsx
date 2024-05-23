@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import { FaUser, FaUserCheck } from "react-icons/fa";
 import Cookies from "universal-cookie";
 import { useSelector } from "react-redux";
-import ProductListSearchBar from "./Navigation/ProductListSearchBar";
 
 export default function Navbar() {
     const [isSearch, setIsSearch] = useState(false);

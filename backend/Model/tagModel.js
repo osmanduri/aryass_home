@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const moment = require('moment');
 moment.locale('fr');
-const path = require('path')
 
 const tagSchema = new mongoose.Schema({
     tagId:String,
@@ -9,7 +8,8 @@ const tagSchema = new mongoose.Schema({
     type: String,
     augmentation: Number,
     valeur:String,
-    label:String
+    label:String,
+    information:String
   });
 
 module.exports = mongoose.model('tag', tagSchema);

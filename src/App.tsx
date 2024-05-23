@@ -19,6 +19,10 @@ import {store, persistor } from './redux/store'; // Assurez-vous d'avoir export�
 import Success from './Pages/StripePage/Success'
 import Cancel from './Pages/StripePage/Cancel';
 import MentionsLegals from './Pages/Profile/pages/Footer/MentionsLegales';
+import QuiSommesNous from './Pages/Profile/pages/Footer/QuiSommesNous';
+import PolitiqueRemboursement from './Pages/Profile/pages/Footer/PolitiqueRemboursement';
+import PaiementSecurise from './Pages/Profile/pages/Footer/PaiementSecurise';
+import CGV from './Pages/Profile/pages/Footer/CGV';
 
 function App() {
   const isAuthenticated = () => {
@@ -45,6 +49,11 @@ function App() {
             <Route path="/payment_success" element={<Success/>} />
             <Route path="/payment_cancel" element={<Cancel />} />
             <Route path="/mentions_legals" element={<MentionsLegals />} />
+            <Route path="/qui_sommes_nous" element={<QuiSommesNous />} />
+            <Route path="/retour_produits" element={<PolitiqueRemboursement />} />
+            <Route path="/paiement" element={<PaiementSecurise />} />
+            <Route path="/cgv" element={<CGV />} />
+
             {/* Utilisez votre propre logique d'authentification pour conditionner l'accès à la route /profil */}
             <Route element={<CheckConnected/>}>
               <Route path="/profil" element={<UserProfil/>}/>

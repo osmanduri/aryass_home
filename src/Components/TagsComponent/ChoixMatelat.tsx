@@ -1,9 +1,10 @@
 
 
 export default function ChoixMatelat({ options, handleChangeOption, select }:any) {
+
     return (
         <div>
-          <p className="font-semibold">Choix Matelat:</p>
+          <p className="font-semibold">Choix Matelas:</p>
           <div className="flex flex-wrap items-center gap-2 mb-4 mt-2">
             {options.map((option:any, index:number) => (
               <div

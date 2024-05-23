@@ -91,7 +91,7 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
         if (telephone) payload.telephone = telephone;
     
         const updateUser = () => {
-            axios.put(`http://localhost:5005/api/users/updateUserById/${user._id}`, payload, {
+            axios.put(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/updateUserById/${user._id}`, payload, {
                 headers:{
                     'token': `Bearer ${cookies.get('token')}`
                 }

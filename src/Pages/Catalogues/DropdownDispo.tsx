@@ -8,15 +8,15 @@ interface DropdownPriceProps {
     setIsShowDropDownDispo?: Dispatch<SetStateAction<boolean>>;
     width?:number;
     height?:number;
-    nbProduct:number;
 }
 
-export default function DropdownDispo({ setIsShowDropDownDispo, width, height, nbProduct }: DropdownPriceProps) {
+export default function DropdownDispo({ setIsShowDropDownDispo, width, height }: DropdownPriceProps) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useDispatch();
     //@ts-ignore
     const dispo = useSelector((state) => state.filter.dispo);
+    
     //@ts-ignore
     const productDetailsRedux = useSelector((state) => state.filter)
 

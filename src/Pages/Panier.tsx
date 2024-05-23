@@ -30,23 +30,22 @@ export default function Panier() {
     const dispatch = useDispatch()
     //@ts-ignore
     const panierRedux = useSelector(state => state.panier)
-    console.log(panierRedux.articles)
     //@ts-ignore
     const userRedux = useSelector(state => state.user.userInfo)
-    console.log(userRedux)
+
     const [totalPrice, setTotalPrice] = useState<number>(0)
 
     const [showFormulaireLivraisonPaypal, setShowFormulaireLivraisonPaypal] = useState<boolean>(false);
     const modalFormulairePaypal = useRef<HTMLDivElement | null>(null);
 
-    const almaTab = [
+    /*const almaTab = [
         "2 x 769,50 € (sans frais)",
         "3 x 769,50 € (sans frais)",
         "4 x 769,50 € (sans frais)",
         "10 x 769,50 € (sans frais)"
     ]
 
-    const [almaSelect, setAlmaSelect] = useState<string>("")
+    const [almaSelect, setAlmaSelect] = useState<string>("")*/
 
     const handleViderPanier = () => {
       dispatch(viderPanierRedux())
@@ -67,8 +66,6 @@ export default function Panier() {
       });
       
       setTotalPrice(total); 
-
-      console.log(panierRedux)
       
     }, [panierRedux.articles]);
 
@@ -76,13 +73,12 @@ export default function Panier() {
 
       const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL_LOCALHOST}/api/payment/create-checkout-session`, {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/payment/create-checkout-session`, {
           userId: userRedux ? userRedux._id : "Non Authentifé sur le site",
           products: panierRedux,
-          prixTotal: panierRedux.articles.reduce((somme:number, article:any) => somme + (article.prix * article.quantite), 0) // calcule du prix total
+          prixTotal: totalPrice //panierRedux.articles.reduce((somme:number, article:any) => somme + (article.prix * article.quantite), 0) // calcule du prix total
       });
 
-      
 
 
       const stripe = await stripePromise;
@@ -92,6 +88,8 @@ export default function Panier() {
 
       if (result?.error) {
           alert(result.error.message);
+      }else{
+        console.log('session id good')
       }
   };
 
@@ -141,10 +139,10 @@ export default function Panier() {
         <div className="h-40 mt-20">
             <div className="flex flex-col items-end max-md:items-center">
                 <p className="text-lg w-[320px] flex justify-between uppercase">Total estimé:<span className="ml-8 font-bold"> €{totalPrice+".00"} EUR</span></p>
-                <div className="border border-black p-4 w-[320px]">
+               {/* <div className="border border-black p-4 w-[320px]">
                     <div className="flex justify-between"><p className="alma_font">Alma</p> <p className="hover:bg-black hover:text-white px-1 rounded cursor-pointer" onMouseEnter={() => setAlmaSelect(almaTab[0])}>2x</p><p onMouseEnter={() => setAlmaSelect(almaTab[1])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">3x</p><p onMouseEnter={() => setAlmaSelect(almaTab[2])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">4x</p><p onMouseEnter={() => setAlmaSelect(almaTab[3])} className="hover:bg-black hover:text-white px-1 rounded cursor-pointer">10x</p></div>
                     <p>{almaSelect}</p>
-                </div>
+      </div> */}
                 <p className="text-right text-sm mt-4 w-[320px]">Taxe incluse, <span className="underline hover:decoration-2 cursor-pointer">frais d'expédition</span> et réductions calculés à l'étape du paiement</p>
                 <p onClick={makePayment} className="bg-black text-white w-[320px] h-[50px] flex justify-center items-center mt-4 cursor-pointer">Procéder au paiement</p>
     

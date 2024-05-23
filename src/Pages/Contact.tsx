@@ -1,5 +1,3 @@
-import { Input } from "@material-tailwind/react";
-import { Textarea } from "@material-tailwind/react";
 export default function Contact() {
   const handleSubmit = (e:any) => {
     e.preventDefault()

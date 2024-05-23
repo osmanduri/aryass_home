@@ -17,7 +17,7 @@ export default function Payment() {
       // Optionnel : Vérifiez auprès de votre backend que le paiement pour cette session est confirmé
       // Exemple: fetch(`/api/payment/verify/${sessionId}`).then(...)
       const verifyPayment = async () => {
-        await axios.get(`http://localhost:5005/api/payment/verify-payment/${sessionId}`)
+        await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/payment/verify-payment/${sessionId}`)
         .then((res) => {
           console.log(res.data)
 

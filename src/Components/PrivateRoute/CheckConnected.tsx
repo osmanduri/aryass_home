@@ -12,7 +12,7 @@ export default function CheckConnected() {
     useEffect(() => {
       async function verifyIsConnected() {
         try {
-          const response = await axios.get(`http://localhost:5005/api/users/verifyConnected/`, {
+          const response = await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/verifyConnected/`, {
             headers: {
               token: `Bearer ${cookies.get('token')}`
             }

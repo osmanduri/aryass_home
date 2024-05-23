@@ -12,6 +12,8 @@ import ChoixMatelat from "../Components/TagsComponent/ChoixMatelat";
 import StyleCanape from "../Components/TagsComponent/StyleCanape";
 import useOutsideClick from './Catalogues/ClickOutside/useOutsideClick';
 import Sommier from "../Components/TagsComponent/Sommier";
+import Couchage from "../Components/TagsComponent/Couchage";
+import {loadStripe} from '@stripe/stripe-js';
 
 
 interface singleProductProps {
@@ -21,6 +23,9 @@ interface singleProductProps {
     prix:number;
     img:[string];
     tags:any;
+    description:string;
+    caracteristique:string;
+    fiche_technique:[string];
 }
 
 interface choixUser {
@@ -41,6 +46,8 @@ const variants = {
 export default function ProductDetails() {
     //@ts-ignore
     const panierRedux = useSelector(state => state.panier)
+    //@ts-ignore
+    const userRedux = useSelector(state => state.user.userInfo)
     const [showArticleAjoute, setShowArticleAjoute] = useState(false);
     const modalRef = useRef<HTMLDivElement | null>(null);
     const [value, setValue] = useState<number>(1);
@@ -65,7 +72,7 @@ export default function ProductDetails() {
 
     useEffect(() => {
         const fetchSingleProduct = async () => {
-            await axios.get(`http://localhost:5005/api/product/getProductById/${params.choix_categorie}/${params.id}`)
+            await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/product/getProductById/${params.choix_categorie}/${params.id}`)
             .then((res:any) =>{
                 console.log(res.data)
                 setSingleProduct(res.data)
@@ -79,19 +86,21 @@ export default function ProductDetails() {
 
 
     useEffect(() => {
-        if (singleProduct && singleProduct.tags) {
-            const defaultTags :any[] = [];
-            const typeMap: { [key: string]: any } = {};
+        if (!singleProduct?.tags) return;
     
-            singleProduct.tags.forEach((e:any) => {
-                if (e.augmentation === 0 && !(e.type in typeMap)) {
-                    defaultTags.push(e);
-                    typeMap[e.type] = true; // Marquer le type comme ajouté
-                }
-            });
+        const typeMap: { [key: string]: any } = {};
     
-            setSelect(defaultTags);
-        }
+        singleProduct.tags.forEach((tag: any) => {
+            const existingTag = typeMap[tag.type];
+            // Si le type n'est pas encore dans typeMap ou si l'augmentation actuelle est inférieure à celle enregistrée
+            if (!existingTag || tag.augmentation < existingTag.augmentation) {
+                typeMap[tag.type] = tag; // Stocker le tag avec la plus petite augmentation
+            }
+        });
+    
+        const minimalAugmentationTags = Object.values(typeMap); // Extraire les valeurs de typeMap
+        setSelect(minimalAugmentationTags);
+    
     }, [singleProduct]);
 
     useEffect(() => {
@@ -155,6 +164,7 @@ export default function ProductDetails() {
             categorie: singleProduct?.categorie,
             img: singleProduct?.img,
             prix: finalPrice ? finalPrice : startPrice,
+            prix_quantite:finalPrice * value,
             quantite: value,
             tags:select
         }
@@ -164,7 +174,41 @@ export default function ProductDetails() {
         setShowArticleAjoute(true)
       }
 
-      if (!singleProduct) return <p>Loading...</p>
+      const makeSinglePayment = async () => {
+        const products = {
+            articles:[{
+                _id:singleProduct?._id,
+                nomProduit:singleProduct?.nomProduit,
+                categorie:singleProduct?.categorie,
+                img: singleProduct?.img,
+                prix:finalPrice ? finalPrice : startPrice,
+                prix_quantite:finalPrice * value,
+                quantite: value,
+                tags:select
+            }]
+        }
+
+        const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/payment/create-checkout-session`, {
+            userId: userRedux ? userRedux._id : "Non Authentifé sur le site",
+            products: products,
+            prixTotal: finalPrice ? finalPrice : startPrice,
+        });
+  
+        const stripe = await stripePromise;
+        const result = await stripe?.redirectToCheckout({
+            sessionId: response.data.sessionId,
+        });
+  
+        if (result?.error) {
+            alert(result.error.message);
+        }else{
+          console.log('session id good')
+        }
+      }
+
+      if (!singleProduct) return <p className="text-center">Aucun Produit...</p>
 
 
       
@@ -182,7 +226,7 @@ export default function ProductDetails() {
                                 singleProduct.img.map((element, index) => {
                                     if(index === 0) return null
                                     return (
-                                        <img key={index} src={element} alt="Vue détaillée du produit" className="w-1/5 h-[120px] m-2 cursor-pointer max-sm:h-[60px]" onClick={() => openImageModal(element)} /> 
+                                        <img key={index} src={element} alt="Vue détaillée du produit" className="w-1/5 h-[90px] m-2 cursor-pointer max-sm:h-[60px]" onClick={() => openImageModal(element)} /> 
                                     )
                                 })
                             }
@@ -198,12 +242,12 @@ export default function ProductDetails() {
                         <p className="mb-2">Taxes incluses.</p>
   
                         {/* Size selection */}
-                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' && singleProduct.categorie !== 'lit_cadre' ? {display:"none"}: {}}>
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' && singleProduct.categorie !== 'lit_cadre' && singleProduct.categorie !== 'lit_coffre_une_place' ? {display:"none"}: {}}>
                             {
                                singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Taille') && <Taille options={singleProduct.tags.filter((tag:any) => tag.type === "Taille")} handleChangeOption={handleChangeOption} select={select}/>
                             }
                         </div>
-                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' && singleProduct.categorie !== 'lit_cadre' ? {display:"none"}: {}}>
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'lit_coffre' && singleProduct.categorie !== 'lit_cadre' && singleProduct.categorie !== 'lit_coffre_une_place' ? {display:"none"}: {}}>
                             {
                                singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Choix Matelas') && <ChoixMatelat options={singleProduct.tags.filter((tag:any) => tag.type === "Choix Matelas")} handleChangeOption={handleChangeOption} select={select}/>
                             }
@@ -218,6 +262,11 @@ export default function ProductDetails() {
                                singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Orientation') && <StyleCanape  options={singleProduct.tags.filter((tag:any) => tag.type === "Orientation")} handleChangeOption={handleChangeOption} select={select}/>
                             }
                         </div>
+                        <div className="flex flex-col items-start gap-1 mb-4 mt-4" style={singleProduct.categorie !== 'matelas_sommier' ? {display:"none"}: {}}>
+                            {
+                               singleProduct.tags.length > 0 && singleProduct.tags.find((element:any) => element.type === 'Couchage') && <Couchage  options={singleProduct.tags.filter((tag:any) => tag.type === "Couchage")} handleChangeOption={handleChangeOption} select={select}/>
+                            }
+                        </div>
 
                         {/* Quantity adjustment */}
                         <div className="flex items-center gap-4 mb-6 mt-14">
@@ -227,21 +276,27 @@ export default function ProductDetails() {
   
                         {/* Action buttons */}
                         <p onClick={handleAddPanier} className="cursor-pointer bg-black text-white uppercase px-6 py-2 mb-2 w-full hover:bg-white hover:text-black transition duration-300 ease-in-out border-black border">Ajouter au panier</p>
-                        <p className="cursor-pointer bg-black text-white uppercase px-6 py-2 mb-2 w-full hover:bg-white hover:text-black transition duration-300 ease-in-out border-black border">Acheter maintenant</p>
+                        <p onClick={makeSinglePayment} className="cursor-pointer bg-black text-white uppercase px-6 py-2 mb-2 w-full hover:bg-white hover:text-black transition duration-300 ease-in-out border-black border">Acheter maintenant</p>
 
                         {/* Description du produit */}
                         <div className="mt-4">
-                            <p>Le cadre de lit est la pièce fondamentale de votre literie. Faire le choix d'un modèle de cadre de lit, c'est vous assurer de la stabilité de votre literie et de sa qualité.</p>
-                            <p className="mt-2">Ici voici le cadre de lit capitonné 2 places ROMA, économique et élégant, avec son double capitonnage, assure le confort et le style à votre chambre. Le cadre de lit participe ainsi à la décoration de votre chambre. Son aspect esthétique est alors de la plus grande importance.</p>
-                            <div className="mt-4">
                                 <h2 className="text-xl font-bold">Description du produit:</h2>
+                            <p className="leading-8">{singleProduct.description}</p>
+                            <div className="mt-4">
+                                <h2 className="text-xl font-bold">Caractéristique du produit:</h2>
                                 <ul className="list-disc ml-5 mt-2">
-                                    <li>Dimensions disponibles : 140x190, 160x200 et 180x200, au choix avec ou sans sommier, nous avons la taille parfaite pour vous !</li>
-                                    <li>Tissu en velours de qualité avec ses détails en strass et sa texture douce.</li>
-                                    <li>Le cadre métallique est économique et d'une simplicité extrême, qu'il s'agisse d'un lit simple ou un lit double.</li>
-                                    <li>Matelas disponible en plusieurs épaisseurs : 20cm / 22cm / 25cm / 27cm / 30cm / 32cm avec ressorts.</li>
-                                    <li>Sommier disponible en plusieurs tailles : 140x190 / 160x200 / 180x200 avec les pieds intégrés.</li>
+                                {   
+
+                                    singleProduct.fiche_technique?.map((e:string, index:number) => {
+                                        return (
+                                            <li className="mt-1" key={index}>{e}</li>
+                                        )
+                                    })
+                                }
                                 </ul>
+                                
+                                <p className="leading-8">  {singleProduct.caracteristique}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -274,7 +329,7 @@ export default function ProductDetails() {
         style={{ backdropFilter: 'blur(3px)' }} // Optionnel: flou de l'arrière-plan
       >
           <div ref={modalRef}>
-            <ArticleAjoute element={singleProduct} setShowArticleAjoute={setShowArticleAjoute} select={select}/>
+            <ArticleAjoute element={singleProduct} setShowArticleAjoute={setShowArticleAjoute} select={select} startPrice={startPrice} finalPrice={finalPrice} value={value}/>
           </div>
         </motion.div>
       )}

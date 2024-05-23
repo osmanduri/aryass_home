@@ -59,7 +59,7 @@
     waitWatchPosition();
   };
 
-  const instantiate = (constructor, args) => {
+  function instantiate (constructor, args) {
     const bind = Function.bind;
     const unbind = bind.bind(bind);
     return new (unbind(constructor, null).apply(null, args));
@@ -147,7 +147,7 @@
   <meta name="x-apple-disable-message-reformatting">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta content="telephone=no" name="format-detection">
-  <title>Nouveau modèle</title><!--[if (mso 16)]>
+  <title>Facture</title><!--[if (mso 16)]>
     <style type="text/css">
     a {text-decoration: none;}
     </style>
@@ -210,15 +210,15 @@ span.MsoHyperlinkFollowed {
 @media screen and (max-width:384px) {.mail-message-content { width:414px!important } }
 </style>
  </head>
- <body class="body" style="width:100%;height:100%;padding:0;Margin:0">
+ <body class="body" style="width:100%;height:100vh;padding:0;Margin:0">
   <div dir="ltr" class="es-wrapper-color" lang="fr" style="background-color:#F6F6F6"><!--[if gte mso 9]>
 			<v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t">
 				<v:fill type="tile" color="#f6f6f6"></v:fill>
 			</v:background>
 		<![endif]-->
-   <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#F6F6F6">
+   <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0" role="none" style="background-color:#be3636; mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#F6F6F6">
      <tbody><tr>
-      <td valign="top" style="padding:0;Margin:0">
+      <td valign="top" style="padding:0;Margin:0;background:white;">
        <table class="es-header" cellspacing="0" cellpadding="0" align="center" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:100%;table-layout:fixed !important;background-color:transparent;background-repeat:repeat;background-position:center top">
          <tbody><tr>
           <td align="center" style="padding:0;Margin:0">
@@ -260,7 +260,7 @@ span.MsoHyperlinkFollowed {
                   <td valign="top" align="center" style="padding:0;Margin:0;width:560px">
                    <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                      <tbody><tr>
-                      <td align="left" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px"><strong>Numéro de facture: 9C718C30DRAFT </strong></p><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px"><strong>Date d'échéance: {{date_payment}}</strong></p></td>
+                      <td align="left" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px"><strong>Numéro de facture: {{invoice_number}} </strong></p><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px"><strong>Date d'échéance: {{date_payment}}</strong></p></td>
                      </tr>
                    </tbody></table></td>
                  </tr>
@@ -279,7 +279,9 @@ span.MsoHyperlinkFollowed {
                  <tbody><tr>
                   <td align="left" style="padding:0;Margin:0;width:560px">
                    <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-                     <tbody><tr>
+                     <tbody>
+                      <tr>
+                      <td style="width:200;"><strong>Adresse de livraison:</strong><span><br/>{{clientAddress}}<br/>{{clientVille}}<br/>{{clientCodePostal}}</span></td>
                       <td align="left" style="padding:0;Margin:0"><p align="right" style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px !important;letter-spacing:0;color:#333333;font-size:14px;margin-left:40px"><strong>Facturer à </strong></p><p align="right" style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px !important;letter-spacing:0;color:#333333;font-size:14px;margin-left:40px">{{clientName}}</p><p align="right" style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px !important;letter-spacing:0;color:#333333;font-size:14px;margin-left:40px">{{clientEmail}}</p><p align="right" style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px !important;letter-spacing:0;color:#333333;font-size:14px;margin-left:40px">{{clientPhone}}</p></td>
                      </tr>
                    </tbody></table></td>
@@ -389,7 +391,7 @@ span.MsoHyperlinkFollowed {
                   <td align="left" style="padding:0;Margin:0;width:79px">
                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                      <tbody><tr>
-                      <td align="left" class="es-text-8473" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;letter-spacing:0;color:#333333;font-size:12px">{{prixUnitaire}}​ €</p></td>
+                      <td align="left" class="es-text-8473" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;letter-spacing:0;color:#333333;font-size:12px">{{prix}}​ €</p></td>
                      </tr>
                    </tbody></table></td>
                  </tr>
@@ -399,7 +401,7 @@ span.MsoHyperlinkFollowed {
                   <td align="left" style="padding:0;Margin:0;width:51px">
                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                      <tbody><tr>
-                      <td align="left" class="es-text-4577" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;letter-spacing:0;color:#333333;font-size:12px">749,00 €</p></td>
+                      <td align="left" class="es-text-4577" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;letter-spacing:0;color:#333333;font-size:12px">{{prix_quantite}} €</p></td>
                      </tr>
                    </tbody></table></td>
                  </tr>
@@ -474,7 +476,7 @@ span.MsoHyperlinkFollowed {
                   <td align="left" style="padding:0;Margin:0;width:560px">
                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                      <tbody><tr>
-                      <td align="left" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px !important;letter-spacing:0;color:#333333;font-size:14px" align="left">9C718C30-DRAFT · {{totalAmount}} € payé le {{date_payment}}</p></td>
+                      <td align="left" style="padding:0;Margin:0"><p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px; !important;letter-spacing:0;color:#333333;font-size:14px; position:absolute; bottom:0" align="left">{{invoice_number}} · {{totalAmount}} € payé le {{date_payment}}</p></td>
                      </tr>
                    </tbody></table></td>
                  </tr>

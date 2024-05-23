@@ -43,16 +43,18 @@ export default function PaypalButton({totalPrice, formState}:PaypalButtonProps) 
             label: 'paypal',   // 'checkout' pour le bouton Checkout avec PayPal uniquement
             tagline:false
           },
+          //@ts-ignore
         createOrder: (data:any, actions:any) => {
           return actions.order.create({
             purchase_units: [{
               amount: {
                 currency_code: 'EUR',
-                value: 5
+                value: 40
               }
             }],
           });
         },
+        //@ts-ignore
         onApprove: (data:any, actions:any) => {
           return actions.order.capture().then((details:any) => {
             console.log('Payment Successful!', details);
@@ -64,8 +66,10 @@ export default function PaypalButton({totalPrice, formState}:PaypalButtonProps) 
                 const payload = {
                     user_id: user ? user._id : 'utilisateur non authentifié',
                     nomComplet: formStateRef.current.nom + ' ' + formStateRef.current.prenom,
+                    prenom:formStateRef.current.prenom,
+                    nom:formStateRef.current.nom,
                     email: formStateRef.current.email,
-                    panier:panier,
+                    articles:panier,
                     prixTotal: totalPrice,
                     adresse: formStateRef.current.adresse,
                     ville: formStateRef.current.ville,
@@ -73,17 +77,28 @@ export default function PaypalButton({totalPrice, formState}:PaypalButtonProps) 
                     telephone: formStateRef.current.telephone,
                     monnaie:"EUR",
                     status_paiement:"paid",
-                    procedure_paiement:"paypal"
+                    procedure_paiement:"paypal",
+                    invoice_number:"UUIDDDDD"
                 }
                 
                 console.log('Le paiement est passé nous pouvons ajouté la commande dans mongo !')
 
                 const sendDataToServer = async () => {
-                    axios.post(`http://localhost:5005/api/commande/new/`, payload)
+                    axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/commande/new/`, payload)
                     .then((res) => {
                         console.log(res.data)
-                        dispatch(viderPanierRedux())
-                        window.location.href = "/payment_success"
+                        
+                        
+                            axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/facture/convertHandlebarsToPdf`, payload) // send invoice
+                            .then((result) => {
+                              dispatch(viderPanierRedux())
+                              console.log(result.data)
+                              window.location.href = "/payment_success"
+                            })
+                            .catch(error => {
+                              console.log(error)
+                              
+                            })
                         
                     })
                     .catch(err => {
@@ -109,7 +124,8 @@ export default function PaypalButton({totalPrice, formState}:PaypalButtonProps) 
   return (
     <div>
       <div id="paypal-button-container" className='w-[320px] h-[50px] mt-4 max-sm:w-[273px] max-sm:h-[30px]'>
-      </div> {/* Le bouton PayPal sera rendu ici */}
+      </div> {/* Le bouton PayPal sera rendu ici  <img className="w-8" src="/loading/loading.gif" alt="loading"/> */}
+      
     </div>
   );
 }

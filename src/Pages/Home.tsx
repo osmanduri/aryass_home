@@ -33,7 +33,7 @@ export default function Home() {
     useEffect(() => {
       const fetchAllProducts = async () => {
         try {
-          const res = await axios.get('http://localhost:5005/api/product/getAllProduct');
+          const res = await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/product/getAllProduct`);
   
           const newProducts = {
             litCoffre: res.data.filter((e:any) => e.categorie === 'lit_coffre').slice(0, 3),

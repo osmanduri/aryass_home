@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { setSortBy } from '../../redux/filterSlice';
+import { useEffect } from 'react';
 
 interface DropdownTrierProps {
   width?:number;
@@ -8,13 +9,17 @@ interface DropdownTrierProps {
 export default function DropdownTrier({ width }: DropdownTrierProps) {
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(setSortBy('Prix: faible à élevé'))
+  }, [])
+
   const style = {
     width:width
   }
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSort = event.target.value;
-    console.log(selectedSort)
+
     dispatch(setSortBy(selectedSort)); // Dispatcher le choix de l'utilisateur
   };
 

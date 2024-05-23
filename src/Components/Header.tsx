@@ -46,12 +46,12 @@ export default function Header() {
             <div className='flex gap-8 items-center max-sm:gap-4'>
                 <div className='flex items-center gap-2 cursor-pointer'>
                     <img src={phone_header} alt="phone" className='w-[20px] h-[20px]'/>
-                    <a href="tel:0627024424" className='text-white text-center text-sm font-normal hover:underline transition duration-300 ease-in-out max-sm:text-xs'>06 27 02 44 24</a>
+                    <a href="tel:0627024424" className='text-white text-center text-sm font-normal hover:underline transition duration-300 ease-in-out max-sm:text-xs'>07 67 37 84 35</a>
                 </div>
                 <div className='w-[2px] h-[15px] bg-white' />
                 <div className='flex items-center gap-2 cursor-pointer'>
                     <img src={email} alt="phone" className='w-[20px] h-[20px]'/>
-                    <a href="mailto:osman.duri@hotmail.fr" className='text-white text-center text-sm font-normal hover:underline transition duration-300 ease-in-out max-sm:text-xs'>aryas_home@gmail.com</a>
+                    <a href="mailto:support@aryas-home.fr" className='text-white text-center text-sm font-normal hover:underline transition duration-300 ease-in-out max-sm:text-xs'>support@aryas-home.fr</a>
                 </div>
                 <div className='w-[2px] h-[15px] bg-white cursor-pointer max-sm:hidden' />
                 <div className='flex items-center gap-2 cursor-pointer max-sm:hidden'>

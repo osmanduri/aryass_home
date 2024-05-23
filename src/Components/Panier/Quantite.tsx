@@ -15,14 +15,14 @@ export default function Quantite({element}:any) {
   const dispatch = useDispatch()
   const handleUpdateValue = async (choix:string) => {
     if(choix === "plus" && user.userInfo){
-      await axios.post(`http://localhost:5005/api/users/panier/incrementer/${user.userInfo._id}`, {product_id:element.id})
+      await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/panier/incrementer/${user.userInfo._id}`, {product_id:element.id})
       .then((res:any) => {
         console.log(res.data)
         dispatch(updateSuccess(res.data))
       })
       .catch(err => console.log(err))
     }else if(choix === 'minus'){
-      await axios.post(`http://localhost:5005/api/users/panier/decrementer/${user.userInfo._id}`, {product_id:element.id})
+      await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/panier/decrementer/${user.userInfo._id}`, {product_id:element.id})
       .then((res:any) => {
         console.log(res.data)
         dispatch(updateSuccess(res.data))

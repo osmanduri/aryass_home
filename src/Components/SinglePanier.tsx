@@ -26,7 +26,7 @@ export default function PanierComponent({element}:any) {
   return (
     <div className="flex items-center py-5 max-md:items-start">
     <div className="flex w-3/5 max-md:w-4/5"> 
-      <Link to={`/catalogue/${element.categorie}/${element._id}`} className='cursor-pointer w-[120px] h-[120px] max-md:w-[90px] max-md:h-[90px]'>
+      <Link to={`/catalogue/${element.categorie}/${element._id}`} className='cursor-pointer w-[120px] h-[90px] max-md:w-[90px] max-md:h-[90px]'>
         <img className="w-full h-full object-fill" src={element.img[0]} alt="canape" />
       </Link>
       <div className="flex flex-col ml-4 gap-1 max-md:w-[160px]">

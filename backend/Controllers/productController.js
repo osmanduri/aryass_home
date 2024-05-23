@@ -4,7 +4,7 @@ const moment = require('moment')
 moment.locale('fr')
 
 module.exports.getAllProduct = async (req, res) => {
-  console.log(req.body.recherche)
+
   try{
       const productsWithTag = await productModel.find();
 
@@ -15,7 +15,7 @@ module.exports.getAllProduct = async (req, res) => {
 }
 
 module.exports.getAllProductRecherche = async (req, res) => {
-    console.log(req.body.recherche)
+
     try{
         const productsWithTag = await this.getAllProductWithTag(req.body.recherche);
 
@@ -69,11 +69,11 @@ module.exports.getProductById = async (req, res) => {
 
 
 module.exports.updateProduct = async(req, res) => {
-    if (!ObjectID.isValid(req.params.id))
-        return res.status(400).send('Produit inconnu ' + req.params.id)
+    if (!ObjectID.isValid(req.params.product_id))
+        return res.status(400).send('Produit inconnu ' + req.params.product_id)
     try {
         const updateProduct = await productModel.findByIdAndUpdate(
-            req.params.id, {
+            req.params.product_id, {
                 $set: req.body
             }, { new: true },
         );
@@ -172,8 +172,6 @@ module.exports.getAllProductWithTag = async (recherche) => { // Recherche pas no
 }
 
 module.exports.getWithTag = async (choix_categorie, dispo, priceMin, priceMax, sortBy) => {
-  console.log('this one ?')
-
   let matchCondition = { 
     'categorie': choix_categorie
   };
@@ -195,6 +193,8 @@ module.exports.getWithTag = async (choix_categorie, dispo, priceMin, priceMax, s
   
   // Affecter la condition de tri basée sur le choix de l'utilisateur
   sortCondition = sortOptions[userSortChoice] || sortCondition; 
+
+  console.log(sortCondition)
   
   // Vérifier si le tableau dispo contient des éléments
   if (dispo.length > 0) {
@@ -229,14 +229,19 @@ module.exports.getWithTag = async (choix_categorie, dispo, priceMin, priceMax, s
           'preserveNullAndEmptyArrays': true
         }
       },
+      {
+        '$sort': { 'tag_details.augmentation': 1 } // Tri des tags par augmentation croissante
+      },
       { 
         '$group': { // Regrouper à nouveau si `$unwind` est utilisé
           '_id': '$_id',
           'nomProduit': { '$first': '$nomProduit' },
           'categorie': { '$first': '$categorie' },
           'prix': { '$first': '$prix' },
+          'prix_barre': { '$first': '$prix_barre' },
           'img': { '$first': '$img' },
           'description': { '$first': '$description' },
+          'caracteristique': { '$first': '$caracteristique' },
           'tags': { '$push': '$tag_details' },
           'dispo': { '$first': '$dispo' },
           'promo': { '$first': '$promo' },
@@ -290,6 +295,8 @@ module.exports.getWithTagById = async (choix_categorie, id) => {
             'prix': { '$first': '$prix' },
             'img': { '$first': '$img' },
             'description': { '$first': '$description' },
+            'caracteristique': { '$first': '$caracteristique' },
+            'fiche_technique': { '$first': '$fiche_technique' },
             'tags': { '$push': '$tag_result' }
           }
         },

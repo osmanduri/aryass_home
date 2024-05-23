@@ -12,7 +12,7 @@ const commandeSchema = new mongoose.Schema({
     nomComplet:{
         type: String
     },
-    panier:{
+    articles:{
         type:[Object]
     },
     payment_method:{

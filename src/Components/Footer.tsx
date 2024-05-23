@@ -1,5 +1,5 @@
 import logo from '/logo/arya_s_home.svg'
-import { FaFacebook, FaInstagram, FaSnapchatGhost } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaSnapchatGhost, FaTiktok  } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -17,50 +17,63 @@ export default function Footer() {
 				<h3 className="tracking-wide uppercase dark:text-gray-50">CATEGORIES</h3>
 				<ul className="space-y-1">
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>LIT COFFRE</a>
+						<a rel="noopener noreferrer" href="/catalogue/lit_coffre" className='hover:underline'>LIT COFFRE</a>
 					</li>
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>LIT CADRE</a>
+						<a rel="noopener noreferrer" href="/catalogue/lit_cadre" className='hover:underline'>LIT CADRE</a>
 					</li>
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>MATELAS & SOMMIER</a>
+						<a rel="noopener noreferrer" href="/catalogue/matelas_sommier" className='hover:underline'>MATELAS & SOMMIER</a>
 					</li>
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>CANAPÉ</a>
+						<a rel="noopener noreferrer" href="/catalogue/canape" className='hover:underline'>CANAPÉ</a>
 					</li>
                     <li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>CHEVET</a>
+						<a rel="noopener noreferrer" href="/catalogue/chevet" className='hover:underline'>CHEVET</a>
 					</li>
                     <li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>LIT COFFRE ENFANTS</a>
+						<a rel="noopener noreferrer" href="/catalogue/lit_coffre_une_place" className='hover:underline'>LIT COFFRE ENFANTS</a>
 					</li>
 				</ul>
 			</div>
             <div className="space-y-3">
 				<div className="uppercase dark:text-gray-50">Social media</div>
 				<div className="flex justify-start space-x-3">
-					<a rel="noopener noreferrer" href="#" title="Facebook" className="flex items-center p-1">
+					<a rel="noopener noreferrer" href="https://www.facebook.com/people/ARYAS-HOME/61553468086308/" target="_blank" title="Facebook" className="flex items-center p-1">
                     <FaFacebook size={20}/>
 					</a>
-					<a rel="noopener noreferrer" href="#" title="Instagram" className="flex items-center p-1">
+					<a rel="noopener noreferrer" href="https://www.instagram.com/home_aryas/" target="_blank" title="Instagram" className="flex items-center p-1">
                     <FaInstagram size={20}/>
 					</a>
-                    <a rel="noopener noreferrer" href="#" title="Instagram" className="flex items-center p-1">
+                    <a rel="noopener noreferrer" href="/" title="Instagram" className="flex items-center p-1">
                     <FaSnapchatGhost size={20}/>
 					</a>
+					<a rel="noopener noreferrer" href="https://www.tiktok.com/@aryas.home" target="_blank" title="Instagram" className="flex items-center p-1">
+                    <FaTiktok size={20}/>
+					</a>
+					
 				</div>
 			</div>
 			<div className="space-y-3">
 				<h3 className="tracking-wide uppercase dark:text-gray-50">Company</h3>
 				<ul className="space-y-1">
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>Mentions légales</a>
+						<a rel="noopener noreferrer" href="/qui_sommes_nous" className='hover:underline'>Qui sommes-nous ?</a>
 					</li>
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>Charte RGPD</a>
+						<a rel="noopener noreferrer" href="/chartre_rgpd" className='hover:underline'>Charte RGPD</a>
 					</li>
                     <li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>Charte RGPD</a>
+						<a rel="noopener noreferrer" href="/mentions_legals" className='hover:underline'>Mentions légales</a>
+					</li>
+					<li>
+						<a rel="noopener noreferrer" href="/cgv" className='hover:underline'>CGV</a>
+					</li>
+					<li>
+						<a rel="noopener noreferrer" href="/retour_produits" className='hover:underline'>Retour des produits</a>
+					</li>
+					<li>
+						<a rel="noopener noreferrer" href="/paiement" className='hover:underline'>Paiement</a>
 					</li>
 				</ul>
 			</div>
@@ -68,13 +81,13 @@ export default function Footer() {
 				<h3 className="uppercase dark:text-gray-50">CONTACT</h3>
 				<ul className="space-y-1">
 					<li>
-						<a rel="noopener noreferrer" href="#">61 rue jean moulin garges les gonesse</a>
+						<a rel="noopener noreferrer" href="#">23 Bd de la Muette<br/>Garges-lès-Gonesse<br/>95140</a>
 					</li>
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>osman.duri@hotmail.fr</a>
+						<a rel="noopener noreferrer" href="mailto:support@aryas-home.fr" className='hover:underline'>support@aryas-home.fr</a>
 					</li>
 					<li>
-						<a rel="noopener noreferrer" href="#" className='hover:underline'>0627024424</a>
+						<a rel="noopener noreferrer" href="tel:0627024424" className='hover:underline'>0767378435</a>
 					</li>
 				</ul>
 			</div>

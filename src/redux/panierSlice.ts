@@ -6,6 +6,7 @@ interface PanierItem {
   nomProduit: string | undefined;
   categorie: string | undefined;
   prix: number | undefined;
+  prix_quantite:number | undefined;
   quantite: number;
   img: string[] | undefined;
   tags:any;
@@ -52,6 +53,8 @@ const panierSlice = createSlice({
       const existingArticle = state.articles.find(article => article._id === action.payload);
       if (existingArticle) {
         existingArticle.quantite++;
+        //@ts-ignore
+        existingArticle.prix_quantite = existingArticle.prix * existingArticle.quantite;
       }
     },
     // Réduire la quantité d'un article dans le panier
@@ -59,8 +62,12 @@ const panierSlice = createSlice({
       const existingArticle = state.articles.find(article => article._id === action.payload);
       if (existingArticle && existingArticle.quantite > 1) {
         existingArticle.quantite--;
+        //@ts-ignore
+        existingArticle.prix_quantite = existingArticle.prix * existingArticle.quantite;
       } else if (existingArticle && existingArticle.quantite === 1) {
         state.articles = state.articles.filter(article => article._id !== action.payload);
+        //@ts-ignore
+        existingArticle.prix_quantite = existingArticle.prix * existingArticle.quantite;
       }
     },
     // Vider le panier

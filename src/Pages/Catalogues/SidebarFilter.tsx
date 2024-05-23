@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { RxCross1 } from "react-icons/rx";
 import { FaLongArrowAltRight } from "react-icons/fa";
@@ -8,6 +8,7 @@ import DropdownDispo from './DropdownDispo';
 import DropdownPrice from './DropdownPrice';
 import { useDispatch } from 'react-redux';
 import { resetState } from '../../redux/filterSlice';
+import useOutsideClick from './ClickOutside/useOutsideClick';
 
 const sidebarVariants = {
     hidden: {
@@ -30,6 +31,7 @@ interface SidebarFilterProps {
 export default function SidebarFilter({ closeSidebar, nbProduct }:SidebarFilterProps) {
     const dispatch = useDispatch()
     const [showDispoDetails, setShowDispoDetails] = useState<string>('main')
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
 
     const handleChoice = (choix:string) => {
         if(choix === "dispo"){
@@ -44,7 +46,7 @@ export default function SidebarFilter({ closeSidebar, nbProduct }:SidebarFilterP
     const handleResetFilter = () => {
         dispatch(resetState())
     }
-
+    useOutsideClick(dropdownRef, closeSidebar); // Permet de fermet le composant lorsque que l'on clique ailleurs
     return (
         <motion.div
           className="sidebar"
@@ -66,7 +68,7 @@ export default function SidebarFilter({ closeSidebar, nbProduct }:SidebarFilterP
           }}
         >
 
-          <div className=''>
+          <div ref={dropdownRef} className=''>
             <div className='flex flex-col items-center p-2 relative'>
                 <p className='text-sm text-black'>Filtrer et trier</p>
                 <p className='text-sm'>{nbProduct} Produits</p>

@@ -29,7 +29,7 @@ export default function Register({isLogin, setIsLogin}:RegisterProps) {
                 password:inputPassword
             }
 
-            axios.post('http://localhost:5005/api/users/addUser', payload)
+            axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/addUser`, payload)
             .then((res) => {
                 console.log(res.data.user)
                 setErrorMsg({

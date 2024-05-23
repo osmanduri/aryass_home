@@ -25,8 +25,18 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    prix_barre:{
+        type:Number,
+        required:false,
+    },
     description:{
         type:String,
+    },
+    caracteristique:{
+        type:String,
+    },
+    fiche_technique:{
+        type:[String],
     },
     img:{
         type:[String],

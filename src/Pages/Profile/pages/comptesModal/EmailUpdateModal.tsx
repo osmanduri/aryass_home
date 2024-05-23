@@ -27,7 +27,7 @@ export default function EmailUpdateModal() {
         }
 
         const updateEmail = async () => {
-            await axios.put(`http://localhost:5005/api/users/updateEmail/${user._id}`, payload ,{
+            await axios.put(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/updateEmail/${user._id}`, payload ,{
                 headers:{
                     'token': `Bearer ${cookies.get('token')}`
                 }

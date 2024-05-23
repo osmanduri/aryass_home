@@ -1,11 +1,8 @@
 
-
-export default function Taille({ options, select, handleChangeOption}:any) {
-  //console.log(options)
-  //console.log(select)
+export default function Couchage({options, select, handleChangeOption}:any) {
     return (
         <div>
-          <p className="font-semibold">Taille:</p>
+          <p className="font-semibold">Couchage:</p>
           <div className="flex gap-2 mb-4 mt-2">
             {options.map((option:any, index:number) => (
               <button

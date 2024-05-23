@@ -12,12 +12,12 @@ const facture_router = require('./Routes/facture_Route')
 var app = express()
 const bodyParser = require('body-parser');
 
-/*app.use(cors({
-  origin: ['http://localhost:3001','http://127.0.0.1:3001', 'https://les-bains-fidelite.netlify.app'],  // Remplacez par l'URL de votre application React
+app.use(cors({
+  origin: ['http://localhost:5173','http://127.0.0.1:3001', 'https://les-bains-fidelite.netlify.app', 'https://aryas-home.fr', 'https://www.aryas-home.fr'],  // Remplacez par l'URL de votre application React
   credentials: true,
-}));*/
+}));
 
-app.use(cors())
+//app.use(cors())
 
 app.use(cookieParser());
 

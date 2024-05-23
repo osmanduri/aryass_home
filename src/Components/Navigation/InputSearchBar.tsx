@@ -2,10 +2,9 @@ import {useState, useEffect} from 'react'
 import { IoIosSearch } from "react-icons/io";
 import ProductListSearchBar from "./ProductListSearchBar";
 import axios from 'axios'
-import { Link } from 'react-router-dom';
 
 export default function InputSearchBar({productTab, setProductTab}:any) {
-  const p = ['1','2','3','4', 'll', 'a','a','a','a','a','a','a','a','a']
+  //const p = ['1','2','3','4', 'll', 'a','a','a','a','a','a','a','a','a']
   const [nomProduitInput, setNomProduitInput] = useState<string>('')
   
   const [overflowList, setOverflowList] = useState<boolean>(false)
@@ -16,7 +15,7 @@ export default function InputSearchBar({productTab, setProductTab}:any) {
     const payload = {
       recherche:nomProduitInput
     }
-    await axios.post(`http://localhost:5005/api/product/getAllProduct/recherche`, payload)
+    await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/product/getAllProduct/recherche`, payload)
     .then((res:any) => {
       setProductTab(res.data)
       if(res.data.length > 4){

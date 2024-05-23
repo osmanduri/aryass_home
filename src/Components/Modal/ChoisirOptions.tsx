@@ -19,19 +19,26 @@ interface ChoisirOptionsProps {
       tags:[];
     }
     setShowArticleAjoute:any;
+    select:any;
+    setSelect:any;
+    startPrice:number;
+    finalPrice:number;
+    setFinalPrice:any;
+    value:number;
+    setValue:any;
 }
 
 
 
-export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, setShowArticleAjoute}:ChoisirOptionsProps) {
+export default function ChoisirOptions({element, isDialogOpen, setIsDialogOpen, setShowArticleAjoute,select,setSelect, startPrice, finalPrice, setFinalPrice, value, setValue}:ChoisirOptionsProps) {
   
   //@ts-ignore
   const panierRedux = useSelector(state => state.panier)
   const dispatch = useDispatch()
-  const [value, setValue] = useState<number>(1)
-  const startPrice = element.prix;
-  const [finalPrice, setFinalPrice] = useState(startPrice);
-  const [select, setSelect] = useState<any>([])
+  //const [value, setValue] = useState<number>(1)
+  //const startPrice = element.prix;
+  //const [finalPrice, setFinalPrice] = useState(startPrice);
+  //const [select, setSelect] = useState<any>([])
   
   useEffect(() => {
     if (element && element.tags) {
@@ -68,10 +75,10 @@ useEffect(() => {
   const handleUpdateValue = (choix:string) => {
       if(choix === 'plus'){
           if(value < 5)
-          setValue(prev => prev + 1)
+          setValue((prev:any) => prev + 1)
       }else{
           if(value > 1)
-          setValue(prev => prev - 1)
+          setValue((prev:any) => prev - 1)
       }
   }
 
@@ -104,6 +111,7 @@ useEffect(() => {
         categorie:element?.categorie,
         img:element?.img,
         prix: finalPrice,
+        prix_quantite:finalPrice*value,
         quantite:value,
         tags:select
     }
@@ -113,8 +121,6 @@ useEffect(() => {
   }
   
   const handleChangeOption = (choixUser:any) => {
-
-    console.log(choixUser)
 
     let index = select.findIndex((element:any) => element.type === choixUser.type)
 
@@ -168,7 +174,7 @@ useEffect(() => {
                         <p className='text-xl font-semibold'>{finalPrice+'.00'} €</p>
                         <p className='text-xs w-[80%]'>Taxes incluses. Frais d'expédition calculés à l'étape de paiement.</p>
                         <div className="flex flex-col items-start gap-1 mb-4 mt-4">
-                            <div className="flex flex-col gap-1 mt-1" style={(element.categorie !== 'lit_coffre' && element.categorie !== 'lit_cadre')  ? {display:"none"}: {}}>
+                            <div className="flex flex-col gap-1 mt-1" style={(element.categorie !== 'lit_coffre' && element.categorie !== 'lit_cadre' && element.categorie !== 'lit_coffre_une_place')  ? {display:"none"}: {}}>
                             <label className='text-sm ml-1 uppercase font-bold'>Taille</label>
                             <div className="relative" onClick={() => setIsOpen(!open)}>
                             <select
@@ -189,7 +195,7 @@ useEffect(() => {
                             <Svg isOpen={isOpen}/>
                             </div>
                             </div>
-                            <div className="flex flex-col gap-1 mt-6" style={(element.categorie !== 'lit_coffre' && element.categorie !== 'lit_cadre') ? {display:"none"}: {}}>
+                            <div className="flex flex-col gap-1 mt-6" style={(element.categorie !== 'lit_coffre' && element.categorie !== 'lit_cadre' && element.categorie !== 'lit_coffre_une_place') ? {display:"none"}: {}}>
                             <label className='text-sm ml-1 font-bold uppercase'>Choix Matelas</label>
                             <div className="relative" onClick={() => setIsOpen(!open)}>
                             <select
@@ -231,7 +237,8 @@ useEffect(() => {
                             <Svg isOpen={isOpen}/>
                             </div>
                             </div>
-                            <div className="flex gap-4 mt-4" style={element.categorie !== 'canape' ? {display:"none"}: {}}>
+                            <div className="flex flex-col gap-4 mt-4" style={element.categorie !== 'canape' ? {display:"none"}: {}}>
+                            <label className='text-sm ml-1 font-bold uppercase'>Orientation</label>
                             <div className="relative" onClick={() => setIsOpen(!open)}>
                             <select
                               className="cursor-pointer appearance-none block w-[200px] bg-transparent border-0 border-b border-gray-300 text-gray-700 py-2 px-1 leading-tight focus:outline-none focus:border-3"
@@ -239,6 +246,27 @@ useEffect(() => {
                               {
                                 element.tags.map((tag:any, index:number) => {
                                   if(tag.type !== "Orientation"){
+                                    return null; // Utilise null pour les éléments non rendus
+                                  }
+                                  return (
+                                    // Utilise l'index comme clé temporaire, mais il vaut mieux utiliser un identifiant unique si disponible
+                                    <option className='' key={tag.id} value={index}>{tag.valeur}</option>
+                                  )
+                                })
+                              }
+                            </select>
+                            <Svg isOpen={isOpen}/>
+                            </div>
+                            </div>
+                            <div className="flex flex-col gap-4 mt-4" style={element.categorie !== 'matelas_sommier' ? {display:"none"}: {}}>
+                            <label className='text-sm ml-1 uppercase font-bold'>Taille</label>
+                            <div className="relative" onClick={() => setIsOpen(!open)}>
+                            <select
+                              className="cursor-pointer appearance-none block w-[200px] bg-transparent border-0 border-b border-gray-300 text-gray-700 py-2 px-1 leading-tight focus:outline-none focus:border-3"
+                              onChange={(e) => handleChangeOption(element.tags[parseInt(e.target.value)])}>
+                              {
+                                element.tags.map((tag:any, index:number) => {
+                                  if(tag.type !== "Couchage"){
                                     return null; // Utilise null pour les éléments non rendus
                                   }
                                   return (

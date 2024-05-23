@@ -30,11 +30,15 @@ export default function FormulaireLivraison({totalPrice, setShowFormulaireLivrai
         telephone: ''
     });
     const [isFormValid, setIsFormValid] = useState(false);
+    const [isEmailValid, setIsEmailValid] = useState(false)
 
     useEffect(() => {
         // Check if all form fields are filled
+        const testEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formState.email);
         const isAllFilled = Object.values(formState).every(value => value.trim() !== '');
         setIsFormValid(isAllFilled);
+        setIsEmailValid(testEmail);
+        console.log(testEmail)
     }, [formState]);  // Update validity whenever formState changes
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +78,8 @@ export default function FormulaireLivraison({totalPrice, setShowFormulaireLivrai
                         <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2 max-sm:text-sm">
                             Email
                         </label>
-                        <input id="email" type="text" name="email" placeholder="Email" value={formState.email} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline max-sm:text-sm" required />
+                        <input id="email" type="text" name="email" placeholder="Email" value={formState.email} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline max-sm:text-sm" required />
+                        { !isEmailValid && formState.email && <p className="text-xs text-[red]">Format email incorrect</p> }
                     </div>
                     <div className="mb-0 w-1/2">
                         <label htmlFor="telephone" className="block text-gray-700 text-sm font-bold mb-2 max-sm:text-sm">
@@ -104,11 +109,12 @@ export default function FormulaireLivraison({totalPrice, setShowFormulaireLivrai
                     </div>
                 </div>
                 { !isFormValid && <p className="text-center text-[red]">Veuillez remplir tout les champs</p> }
-                {isFormValid ? 
+                {isFormValid && isEmailValid && formState.email ? 
                 <div className="flex justify-center">
                     <PaypalButton totalPrice={totalPrice} formState={formState}/>
                 </div> 
                 : 
+                
                 <div className="flex justify-center items-center w-full h-[45px] mt-4 max-sm:w-[273px] max-sm:h-[30px]">
                     <div className="flex justify-center items-center bg-[#D3D3D3] w-[320px] h-[45px] max-sm:w-[273px] max-sm:h-[30px] rounded-full">
                     <img className=" w-[69px] h-[20px] " src={paypal_logo_2} alt="paypal_logo"/>

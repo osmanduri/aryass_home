@@ -22,7 +22,12 @@ export default function Commandes() {
         setCommandeUser([])
         const fetchCommandeUser = async () => {
             try {
-                const res = await axios.post(`http://localhost:5005/api/commande/getCommandByUser/${user._id}`, { payeOuNonPaye });
+                const res = await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/commande/getCommandByUser/${user._id}`, { payeOuNonPaye }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': `Bearer ${user.token}`
+                    }
+                });
                 setCommandeUser(res.data);
                 console.log(res.data)
             } catch (err) {

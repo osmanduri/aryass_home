@@ -26,7 +26,7 @@ export default function PasswordUpdateModal() {
         }
 
         const updatePassword = async () => {
-            await axios.put(`http://localhost:5005/api/users/updatePassword/${user._id}`, payload ,{
+            await axios.put(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/updatePassword/${user._id}`, payload ,{
                 headers:{
                     'token': `Bearer ${cookies.get('token')}`
                 }

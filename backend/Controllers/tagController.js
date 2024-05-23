@@ -13,14 +13,15 @@ module.exports.getAllTags = (req, res) => {
 module.exports.addTag = async (req, res) => {
     
     try{
-        let tagsId = uuidv4();
+
         const newTags = new tagModel({
-            tagId: tagsId,
+            tagId: uuidv4(),
             categorie: req.body.categorie,
             type:req.body.type,
             augmentation: req.body.augmentation,
             valeur: req.body.valeur,
-            label:req.body.label
+            label:req.body.label,
+            information:req.body.information
         })
     
         const savedTag = await newTags.save()

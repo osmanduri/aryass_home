@@ -13,7 +13,7 @@ module.exports.new = async (req, res) => {
             user_id:req.body.user_id,
             nomComplet:req.body.nomComplet,
             email:req.body.email,
-            panier:req.body.panier,
+            articles:req.body.articles,
             payment_method:req.body.payment_method,
             prixTotal:req.body.prixTotal,
             entreprise:req.body.entreprise,

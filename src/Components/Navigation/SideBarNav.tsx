@@ -42,7 +42,7 @@ export default function SideBarNav({ isOpen, setShowSideBar }: SideBarNavProps) 
                             <NavLink to="/catalogue/lit_cadre" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
                             LIT CADRE 
                             </NavLink>
-                            <NavLink to="/catalogue/matelas" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
+                            <NavLink to="/catalogue/matelas_sommier" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
                             MATELAS & SOMMIER 
                             </NavLink>
                             <NavLink to="/catalogue/canape" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
@@ -51,7 +51,7 @@ export default function SideBarNav({ isOpen, setShowSideBar }: SideBarNavProps) 
                             <NavLink to="/catalogue/chevet" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
                             CHEVET
                             </NavLink>
-                            <NavLink to="/catalogue/lit_coffre_enfant" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
+                            <NavLink to="/catalogue/lit_coffre_une_place" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
                             LIT COFFRE ENFANTS
                             </NavLink>
       <div className={isOpen ? "sideBarNavBottomActive" : "sideBarNavBottom"}>
