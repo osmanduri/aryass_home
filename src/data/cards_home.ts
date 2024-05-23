@@ -20,7 +20,7 @@ export const card_home:CardHomeItems[] = [
     {
         name:"MATELAS + SOMMIER",
         img:"matelas.webp",
-        url:"/catalogue/matelas"
+        url:"/catalogue/matelas_sommier"
     },
     {
         name:"CANAPÉ",
@@ -35,7 +35,7 @@ export const card_home:CardHomeItems[] = [
     {
         name:"LIT COFFRE ENFANTS",
         img:"lit_coffre_enfant.webp",
-        url:"/catalogue/lit_coffre_enfant"
+        url:"/catalogue/lit_coffre_une_place"
     },
 ]
 

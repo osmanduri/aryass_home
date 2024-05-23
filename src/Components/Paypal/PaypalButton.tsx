@@ -49,7 +49,7 @@ export default function PaypalButton({totalPrice, formState}:PaypalButtonProps) 
             purchase_units: [{
               amount: {
                 currency_code: 'EUR',
-                value: 40
+                value: totalPrice
               }
             }],
           });
