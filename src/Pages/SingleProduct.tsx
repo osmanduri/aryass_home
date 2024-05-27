@@ -74,7 +74,6 @@ export default function ProductDetails() {
         const fetchSingleProduct = async () => {
             await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/product/getProductById/${params.choix_categorie}/${params.id}`)
             .then((res:any) =>{
-                console.log(res.data)
                 setSingleProduct(res.data)
                 setStartPrice(res.data.prix)
                 
@@ -119,10 +118,7 @@ export default function ProductDetails() {
     }, [select])
 
       const handleChangeOption = (choixUser:choixUser) => {
-        console.log(choixUser)
         let index = select.findIndex((element:any) => element.type === choixUser.type)
-
-        console.log(index)
 
         if(index === -1){
             setSelect([...select, choixUser])

@@ -38,7 +38,6 @@ export default function FormulaireLivraison({totalPrice, setShowFormulaireLivrai
         const isAllFilled = Object.values(formState).every(value => value.trim() !== '');
         setIsFormValid(isAllFilled);
         setIsEmailValid(testEmail);
-        console.log(testEmail)
     }, [formState]);  // Update validity whenever formState changes
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

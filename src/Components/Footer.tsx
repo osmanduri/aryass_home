@@ -3,7 +3,7 @@ import { FaFacebook, FaInstagram, FaSnapchatGhost, FaTiktok  } from "react-icons
 
 export default function Footer() {
   return (
-<footer className="px-4 divide-y dark:bg-gray-800 dark:text-gray-100 mt-36">
+<footer className="px-4 divide-y dark:bg-gray-800 dark:text-gray-100 mt-4">
 	<div className="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
 		<div className="lg:w-1/3">
 			<a rel="noopener noreferrer" href="/" className="flex justify-center lg:justify-start">
@@ -37,7 +37,7 @@ export default function Footer() {
 				</ul>
 			</div>
             <div className="space-y-3">
-				<div className="uppercase dark:text-gray-50">Social media</div>
+				<div className="uppercase dark:text-gray-50">Reseaux sociaux</div>
 				<div className="flex justify-start space-x-3">
 					<a rel="noopener noreferrer" href="https://www.facebook.com/people/ARYAS-HOME/61553468086308/" target="_blank" title="Facebook" className="flex items-center p-1">
                     <FaFacebook size={20}/>
@@ -87,13 +87,13 @@ export default function Footer() {
 						<a rel="noopener noreferrer" href="mailto:support@aryas-home.fr" className='hover:underline'>support@aryas-home.fr</a>
 					</li>
 					<li>
-						<a rel="noopener noreferrer" href="tel:0627024424" className='hover:underline'>0767378435</a>
+						<a rel="noopener noreferrer" href="tel:0767378435" className='hover:underline'>0767378435</a>
 					</li>
 				</ul>
 			</div>
 		</div>
 	</div>
-	<div className="py-6 text-sm text-center dark:text-gray-400">© 2024 Company Co. All rights reserved.</div>
+	<div className="py-6 text-sm text-center dark:text-gray-400">© 2024 Company Co. All rights reserved. Osman Duri</div>
 </footer>
   )
 }

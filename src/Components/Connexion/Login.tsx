@@ -30,7 +30,6 @@ export default function Login({isLogin, setIsLogin}:RegisterProps) {
             axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/login`, payload)
             .then((res) => {
                 if(res.data){
-                    console.log(res.data)
                     cookies.set('token', res.data.token, { path: '/' });
                     dispatch(updateSuccess(res.data))
                     window.location.href = "/profil"
@@ -46,7 +45,7 @@ export default function Login({isLogin, setIsLogin}:RegisterProps) {
         loginUser();
     }
   return (
-    <div className='bg-[#F3F3F3] p-20'>
+    <div className='bg-[#F3F3F3] p-6'>
     <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow-2xl shadow-slate-300 ">
         <h1 className="text-4xl font-medium">Login</h1>
 

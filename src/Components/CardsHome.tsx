@@ -23,7 +23,6 @@ export default function CardsHome({element}:CardsHomeProps) {
             setArrowSize(20)
         }
     }
-    console.log(element.url)
   return (
     <div className='mb-8'>
         <Link to={element.url}>

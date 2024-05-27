@@ -59,6 +59,7 @@ export default function ListeProduits({element, index}:ListeProduitsProps) {
   const startPrice = element.prix;
   const [finalPrice, setFinalPrice] = useState(startPrice);
   const [showPartirDe, setShowPartirDe] = useState<boolean>(false)
+  console.log(element.object_fit)
 
   useEffect(() => {
     let monBool = false;
@@ -86,7 +87,6 @@ export default function ListeProduits({element, index}:ListeProduitsProps) {
     dispatch(ajouterArticle(payloadAddBasket))
     setShowArticleAjoute(true);
   }
-
     useOutsideClick(modalRef, () => setShowArticleAjoute(false))
   return (
     <>
@@ -104,7 +104,7 @@ export default function ListeProduits({element, index}:ListeProduitsProps) {
     <Link to={`/catalogue/${element.categorie}/${element._id}`} onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)}>
       <div className="shadow-2xl w-full relative">
         <div className="zoom_liste_produit overflow-hidden relative sm:pb-[65.25%] max-xs:w-[100%] max-xs:h-[250px]">
-          <img src={element.img[0]} alt="categorie_meubles" className="absolute top-0 left-0 w-full h-full" />
+          <img src={element.img[0]} alt="categorie_meubles" className="absolute top-0 left-0 w-full h-full" style={{ objectFit: element.object_fit === "cover" ? "cover" : "fill" }} />
           {element.promo === true && <p className='absolute top-2 left-2 py-2 px-8 bg-black text-white text-xs uppercase'>Promo</p>}
         </div>
         <div className="bg-white p-4 shadow-2xl h-[90px]" style={{ borderTop: "1px solid rgba(0, 0, 0, 0.3)" }}>

@@ -52,7 +52,7 @@ export default function SideBarNav({ isOpen, setShowSideBar }: SideBarNavProps) 
                             CHEVET
                             </NavLink>
                             <NavLink to="/catalogue/lit_coffre_une_place" className={({isActive}) => isActive ? "nav-active_side": "non-active-class_side" } onClick={() => setShowSideBar(false)}>
-                            LIT COFFRE ENFANTS
+                            LIT COFFRE SINGLE
                             </NavLink>
       <div className={isOpen ? "sideBarNavBottomActive" : "sideBarNavBottom"}>
         <div className="flex justify-center items-center p-8 gap-6">

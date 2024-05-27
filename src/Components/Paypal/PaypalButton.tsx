@@ -57,7 +57,6 @@ export default function PaypalButton({totalPrice, formState}:PaypalButtonProps) 
         //@ts-ignore
         onApprove: (data:any, actions:any) => {
           return actions.order.capture().then((details:any) => {
-            console.log('Payment Successful!', details);
 
             if(details.status === "COMPLETED"){
                 //Sauvegarder la commande dans la base de donnée
@@ -81,18 +80,15 @@ export default function PaypalButton({totalPrice, formState}:PaypalButtonProps) 
                     invoice_number:"UUIDDDDD"
                 }
                 
-                console.log('Le paiement est passé nous pouvons ajouté la commande dans mongo !')
-
                 const sendDataToServer = async () => {
                     axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/commande/new/`, payload)
-                    .then((res) => {
-                        console.log(res.data)
-                        
+                    //@ts-ignore
+                    .then((res) => {                        
                         
                             axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/facture/convertHandlebarsToPdf`, payload) // send invoice
+                            //@ts-ignore
                             .then((result) => {
                               dispatch(viderPanierRedux())
-                              console.log(result.data)
                               window.location.href = "/payment_success"
                             })
                             .catch(error => {

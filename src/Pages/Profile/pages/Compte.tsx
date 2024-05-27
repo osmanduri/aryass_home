@@ -29,8 +29,9 @@ export default function Compte() {
     useEffect(() => {
         const fetchUser = async () => {
             await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/getUserById/${user._id}`)
+            //@ts-ignore
             .then((res:any) => {
-                console.log(res.data)
+
             })
             .catch(err => console.log(err))
         }

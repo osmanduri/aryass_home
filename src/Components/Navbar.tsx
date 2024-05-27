@@ -26,7 +26,6 @@ export default function Navbar() {
     const user = useSelector(state => state.user.userInfo)
      //@ts-ignore
     const panier = useSelector(state => state.panier.articles)
-    console.log(panier.length)
 
     const showBurgerMenu = () => {
         if(window.innerWidth <= 990){

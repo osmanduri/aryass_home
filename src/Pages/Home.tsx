@@ -14,14 +14,14 @@ import { FaCircleArrowRight } from "react-icons/fa6";
 import NouvelleCollection from "./Home/NouvelleCollection";
 import HomeListeProduits from "./Home/HomeListeProduits";
 import ShowHomeProductFeatures from "./Home/ShowHomeProductFeatures";
+import ExcellenceHome from "./Home/ExcellenceHome";
+import AryasHomeImageIa from "./Home/AryasHomeImageIa";
+import IconInformationHome from "./Home/IconInformationHome";
+import {icon_livraison} from '../data/icon_data'
 import axios from 'axios'
 
-
-
-
-
 export default function Home() {
-
+  console.log(icon_livraison)
 
   const useFetchProducts = () => {
     const [products, setProducts] = useState({
@@ -105,25 +105,40 @@ export default function Home() {
         <div className="swiper-button-prev1 cursor-pointer"><FaCircleArrowLeft size={35}/></div>
         <div className="swiper-button-next1 cursor-pointer"><FaCircleArrowRight size={35}/></div>
       </div>
-      <div className="mt-44">
+      <div className="mt-20">
       <NouvelleCollection/>
       </div>
-      <div className="mt-44">
+      <div className="mt-20">
         <HomeListeProduits titre="Lit coffre" categorie={litCoffre} link="/catalogue/lit_coffre"/>
       </div>
-      <div className="mt-44">
-        <HomeListeProduits titre="Canapé" categorie={canape} link="/catalogue/canape"/>
-      </div>
-      <div className="mt-44">
+      <AryasHomeImageIa/>
+      <div className="mt-20">
         <HomeListeProduits titre="Cadre de lit" categorie={litCadre} link="/catalogue/lit_cadre"/>
       </div>
-      <div className="mt-44">
-        <ShowHomeProductFeatures/>
+      <ExcellenceHome/>
+      <div className="mt-20">
+        <HomeListeProduits titre="Canapé" categorie={canape} link="/catalogue/canape"/>
       </div>
       
+      <div className="mt-20">
+        <ShowHomeProductFeatures/>
+      </div>
+        <div className="max-w-[1536px] m-auto flex max-md:flex-col mt-32">
+        {
+          icon_livraison.map((element, index:number) => {
+            return (
 
+                <IconInformationHome key={index} element={element}/>
 
-      
+              
+            )
+          })
+        }
+        </div>
+
+        
+        
+
     </>
   );
 }

@@ -30,6 +30,10 @@ input::-webkit-inner-spin-button {
     font-style: normal;
 }
 
+.myClass path{
+    color: white;
+}
+
 
 @import url('./Components/navigation.scss');
 @import url('./Components/side_bar_menu.scss');

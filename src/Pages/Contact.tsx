@@ -2,7 +2,6 @@ export default function Contact() {
   const handleSubmit = (e:any) => {
     e.preventDefault()
 
-    console.log(e)
   }
   return ( 
     <>

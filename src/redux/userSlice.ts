@@ -41,7 +41,6 @@ export const userSlice = createSlice({
       state.status.pending = true;
     },
     updateSuccess: (state, action: PayloadAction<User>) => {
-      console.log(action.payload)
       state.status.pending = false;
       state.userInfo = action.payload;
       state.status.error = false;

@@ -29,7 +29,6 @@ export default function Commandes() {
                     }
                 });
                 setCommandeUser(res.data);
-                console.log(res.data)
             } catch (err) {
                 console.error(err);
                 //@ts-ignore

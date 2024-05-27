@@ -27,7 +27,6 @@ const panierSlice = createSlice({
   reducers: {
     // Ajouter un article au panier ou augmenter sa quantité
     ajouterArticle: (state, action: PayloadAction<PanierItem>) => {
-      console.log('ajouterArticle !')
       const existingArticle = state.articles.find(article => article._id === action.payload._id);
       if (existingArticle) {
         existingArticle.quantite++;

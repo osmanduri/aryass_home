@@ -32,7 +32,6 @@ export default function PasswordUpdateModal() {
                 }
             })
             .then((res:any) => {
-                console.log(res.data.user)
                 setMsgApi({
                     msg:res.data.message,
                     color:"green"

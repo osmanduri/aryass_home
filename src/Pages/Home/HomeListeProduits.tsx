@@ -7,7 +7,6 @@ interface HomeListeProduitsProps {
 }
 
 export default function HomeListeProduits({titre, categorie, link}: HomeListeProduitsProps) {
-  console.log(categorie)
   return (
     <div className="max-w-[1536px] mx-auto">
       <h1 className="m-2 text-4xl text-black font-semibold text-center lg:text-left">{titre}</h1>

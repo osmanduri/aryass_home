@@ -33,7 +33,6 @@ export default function EmailUpdateModal() {
                 }
             })
             .then((res:any) => {
-                console.log(res.data.user)
                 dispatch(updateSuccess(res.data.user))
                 setMsgApi({
                     msg:res.data.message,

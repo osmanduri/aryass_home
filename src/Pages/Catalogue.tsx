@@ -30,8 +30,7 @@ export default function Catalogue() {
       await axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/product/getAllProductByCategorie/${params.choix_categorie}`, payloadFilter)
       .then((res) => {
         setProductTab(res.data)
-        console.log(res.data)
-                
+                        
       })
       .catch(err => console.log(err))
 

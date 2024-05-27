@@ -97,7 +97,6 @@ export default function UserUpdateModal({setShowUpdateUserModal}:any) {
                 }
             })
             .then((res: any) => {
-                console.log(res.data);
                 setLoading(false)
                 dispatch(updateSuccess(res.data.user));
                 setMsgApi({

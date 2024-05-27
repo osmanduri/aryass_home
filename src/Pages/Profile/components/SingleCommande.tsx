@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 export default function SingleCommande({element}:any) { 
     const [paymentMethod, setPaymentMethod] = useState<string>('')
     const finaliserReglement = async (sessionId:string) => {
-        console.log(sessionId)
         const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
           
         const stripe = await stripePromise;

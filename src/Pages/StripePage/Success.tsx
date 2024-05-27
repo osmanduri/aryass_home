@@ -19,7 +19,7 @@ export default function Payment() {
       const verifyPayment = async () => {
         await axios.get(`${import.meta.env.VITE_BASE_URL_PROD}/api/payment/verify-payment/${sessionId}`)
         .then((res) => {
-          console.log(res.data)
+
 
           if(res.data.success){
             dispatch(viderPanierRedux());

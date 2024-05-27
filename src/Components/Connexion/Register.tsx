@@ -31,7 +31,6 @@ export default function Register({isLogin, setIsLogin}:RegisterProps) {
 
             axios.post(`${import.meta.env.VITE_BASE_URL_PROD}/api/users/addUser`, payload)
             .then((res) => {
-                console.log(res.data.user)
                 setErrorMsg({
                     msg:res.data.message,
                     color:"green"
